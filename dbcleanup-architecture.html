@@ -1,0 +1,336 @@
+import React, { useState } from 'react';
+import { Database, GitBranch, Mail, FileText, Shield, Clock, CheckCircle, XCircle, AlertTriangle, Users, Settings, Play, Archive } from 'lucide-react';
+
+export default function TIDatabaseCleanupArchitecture() {
+  const [activeComponent, setActiveComponent] = useState(null);
+
+  const components = {
+    scanner: {
+      title: "Database Scanner",
+      description: "Identifies unused objects and potential deletion candidates",
+      responsibilities: ["Scan all viable data", "Identify unused objects", "Check against configuration tables"]
+    },
+    config: {
+      title: "Configuration Tables",
+      description: "Control deletion parameters and protected objects",
+      responsibilities: ["Objects not to delete", "Deletion time settings", "Approval requirements", "Database-specific rules"]
+    },
+    audit: {
+      title: "Audit Log System",
+      description: "Tracks all changes and actions in the database",
+      responsibilities: ["User signatures", "Timestamps", "Action tracking", "Change monitoring"]
+    },
+    email: {
+      title: "Email Notification System",
+      description: "Notifies relevant developers for approval",
+      responsibilities: ["Send deletion requests", "Approval/decline notifications", "Reminder emails", "Status updates"]
+    },
+    vcs: {
+      title: "VCS Sync (Git)",
+      description: "Backs up objects before deletion",
+      responsibilities: ["Store deleted objects", "Version control", "Recovery capability", "Change history"]
+    },
+    approval: {
+      title: "Approval Process",
+      description: "Developer approval workflow for deletions",
+      responsibilities: ["Review requests", "Approve/decline", "Track decisions", "Authorization control"]
+    },
+    deletion: {
+      title: "Deletion Engine",
+      description: "Executes approved deletions",
+      responsibilities: ["Execute deletions", "Verify completion", "Update audit log", "Error handling"]
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 text-white p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            Texas Instruments Database Cleanup Architecture
+          </h1>
+          <p className="text-xl text-gray-300">Automated Database Object Lifecycle Management System</p>
+          <div className="mt-4 flex justify-center gap-4 text-sm text-gray-400">
+            <span>Oracle SQL Developer</span>
+            <span>•</span>
+            <span>PL/SQL</span>
+            <span>•</span>
+            <span>Git VCS</span>
+          </div>
+        </div>
+
+        {/* Architecture Diagram */}
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-8 border border-blue-500/20 mb-8">
+          <h2 className="text-2xl font-bold mb-8 text-center text-blue-400">System Architecture Flow</h2>
+          
+          {/* Top Layer - Input */}
+          <div className="mb-8">
+            <div className="text-center mb-4">
+              <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Input Layer</span>
+            </div>
+            <div className="flex justify-center">
+              <div 
+                className="bg-gradient-to-br from-blue-600 to-blue-800 p-6 rounded-lg border-2 border-blue-400 w-64 cursor-pointer hover:scale-105 transition-transform"
+                onMouseEnter={() => setActiveComponent('scanner')}
+                onMouseLeave={() => setActiveComponent(null)}
+              >
+                <Database className="mx-auto mb-3 text-blue-200" size={48} />
+                <h3 className="text-center font-bold text-lg">Oracle Database</h3>
+                <p className="text-center text-sm text-blue-200 mt-2">Source Database with Objects</p>
+              </div>
+            </div>
+            <div className="flex justify-center my-4">
+              <div className="w-1 h-12 bg-gradient-to-b from-blue-500 to-transparent"></div>
+            </div>
+          </div>
+
+          {/* Processing Layer */}
+          <div className="mb-8">
+            <div className="text-center mb-4">
+              <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Processing & Control Layer</span>
+            </div>
+            <div className="grid grid-cols-3 gap-6">
+              {/* Scanner */}
+              <div 
+                className={`bg-slate-700/50 p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                  activeComponent === 'scanner' ? 'border-cyan-400 scale-105' : 'border-slate-600'
+                }`}
+                onMouseEnter={() => setActiveComponent('scanner')}
+                onMouseLeave={() => setActiveComponent(null)}
+              >
+                <Play className="mx-auto mb-3 text-cyan-400" size={40} />
+                <h3 className="text-center font-bold">Database Scanner</h3>
+                <p className="text-center text-xs text-gray-400 mt-2">Identifies unused objects</p>
+              </div>
+
+              {/* Configuration */}
+              <div 
+                className={`bg-slate-700/50 p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                  activeComponent === 'config' ? 'border-purple-400 scale-105' : 'border-slate-600'
+                }`}
+                onMouseEnter={() => setActiveComponent('config')}
+                onMouseLeave={() => setActiveComponent(null)}
+              >
+                <Settings className="mx-auto mb-3 text-purple-400" size={40} />
+                <h3 className="text-center font-bold">Configuration Tables</h3>
+                <p className="text-center text-xs text-gray-400 mt-2">Deletion rules & settings</p>
+              </div>
+
+              {/* Audit Log */}
+              <div 
+                className={`bg-slate-700/50 p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                  activeComponent === 'audit' ? 'border-yellow-400 scale-105' : 'border-slate-600'
+                }`}
+                onMouseEnter={() => setActiveComponent('audit')}
+                onMouseLeave={() => setActiveComponent(null)}
+              >
+                <FileText className="mx-auto mb-3 text-yellow-400" size={40} />
+                <h3 className="text-center font-bold">Audit Log System</h3>
+                <p className="text-center text-xs text-gray-400 mt-2">Track all changes</p>
+              </div>
+            </div>
+            <div className="flex justify-center my-4">
+              <div className="w-1 h-12 bg-gradient-to-b from-purple-500 to-transparent"></div>
+            </div>
+          </div>
+
+          {/* Approval Layer */}
+          <div className="mb-8">
+            <div className="text-center mb-4">
+              <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Notification & Approval Layer</span>
+            </div>
+            <div className="grid grid-cols-2 gap-6 max-w-3xl mx-auto">
+              {/* Email Notification */}
+              <div 
+                className={`bg-slate-700/50 p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                  activeComponent === 'email' ? 'border-green-400 scale-105' : 'border-slate-600'
+                }`}
+                onMouseEnter={() => setActiveComponent('email')}
+                onMouseLeave={() => setActiveComponent(null)}
+              >
+                <Mail className="mx-auto mb-3 text-green-400" size={40} />
+                <h3 className="text-center font-bold">Email Notification</h3>
+                <p className="text-center text-xs text-gray-400 mt-2">Notify developers</p>
+              </div>
+
+              {/* Approval Process */}
+              <div 
+                className={`bg-slate-700/50 p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                  activeComponent === 'approval' ? 'border-pink-400 scale-105' : 'border-slate-600'
+                }`}
+                onMouseEnter={() => setActiveComponent('approval')}
+                onMouseLeave={() => setActiveComponent(null)}
+              >
+                <Users className="mx-auto mb-3 text-pink-400" size={40} />
+                <h3 className="text-center font-bold">Approval Workflow</h3>
+                <p className="text-center text-xs text-gray-400 mt-2">Developer authorization</p>
+              </div>
+            </div>
+            <div className="flex justify-center my-4">
+              <div className="w-1 h-12 bg-gradient-to-b from-pink-500 to-transparent"></div>
+            </div>
+          </div>
+
+          {/* Output Layer */}
+          <div>
+            <div className="text-center mb-4">
+              <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Execution & Backup Layer</span>
+            </div>
+            <div className="grid grid-cols-2 gap-6 max-w-3xl mx-auto">
+              {/* VCS Sync */}
+              <div 
+                className={`bg-slate-700/50 p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                  activeComponent === 'vcs' ? 'border-orange-400 scale-105' : 'border-slate-600'
+                }`}
+                onMouseEnter={() => setActiveComponent('vcs')}
+                onMouseLeave={() => setActiveComponent(null)}
+              >
+                <GitBranch className="mx-auto mb-3 text-orange-400" size={40} />
+                <h3 className="text-center font-bold">VCS Sync (Git)</h3>
+                <p className="text-center text-xs text-gray-400 mt-2">Backup before deletion</p>
+              </div>
+
+              {/* Deletion Engine */}
+              <div 
+                className={`bg-slate-700/50 p-6 rounded-lg border-2 cursor-pointer transition-all ${
+                  activeComponent === 'deletion' ? 'border-red-400 scale-105' : 'border-slate-600'
+                }`}
+                onMouseEnter={() => setActiveComponent('deletion')}
+                onMouseLeave={() => setActiveComponent(null)}
+              >
+                <Archive className="mx-auto mb-3 text-red-400" size={40} />
+                <h3 className="text-center font-bold">Deletion Engine</h3>
+                <p className="text-center text-xs text-gray-400 mt-2">Execute approved deletions</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Component Details */}
+        {activeComponent && (
+          <div className="bg-slate-800/70 backdrop-blur-sm rounded-lg p-6 border border-blue-500/30 mb-8 animate-fadeIn">
+            <h3 className="text-2xl font-bold mb-3 text-blue-400">{components[activeComponent].title}</h3>
+            <p className="text-gray-300 mb-4">{components[activeComponent].description}</p>
+            <div className="mt-4">
+              <h4 className="font-semibold mb-2 text-cyan-400">Key Responsibilities:</h4>
+              <ul className="space-y-2">
+                {components[activeComponent].responsibilities.map((resp, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <CheckCircle size={16} className="text-green-400 mt-1 flex-shrink-0" />
+                    <span className="text-gray-300">{resp}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+
+        {/* Process Flow */}
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-8 border border-blue-500/20 mb-8">
+          <h2 className="text-2xl font-bold mb-6 text-blue-400">Deletion Process Flow</h2>
+          <div className="space-y-4">
+            {[
+              { step: 1, title: "Scan Database", desc: "Scanner identifies unused objects based on usage patterns", icon: Database },
+              { step: 2, title: "Check Configuration", desc: "Verify object against configuration tables (protected objects, deletion rules)", icon: Settings },
+              { step: 3, title: "Notify Developers", desc: "Email notification sent to relevant developers for approval", icon: Mail },
+              { step: 4, title: "Await Approval", desc: "Developer reviews and approves or declines deletion request", icon: Users },
+              { step: 5, title: "Backup to Git", desc: "Object is stored in Git repository for version control", icon: GitBranch },
+              { step: 6, title: "Execute Deletion", desc: "Approved object is deleted from the database", icon: Archive },
+              { step: 7, title: "Log Action", desc: "All actions recorded in audit log with timestamps and user signatures", icon: FileText }
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-start gap-4 p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-all">
+                <div className="flex-shrink-0 w-12 h-12 bg-blue-600/20 rounded-full flex items-center justify-center border-2 border-blue-500">
+                  <span className="font-bold text-blue-400">{item.step}</span>
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-lg mb-1 flex items-center gap-2">
+                    <item.icon size={20} className="text-cyan-400" />
+                    {item.title}
+                  </h4>
+                  <p className="text-gray-400 text-sm">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Key Features */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-blue-500/20">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-green-400">
+              <CheckCircle size={24} />
+              Key Features
+            </h3>
+            <ul className="space-y-3">
+              {[
+                "Automated identification of unused objects",
+                "Email notifications to relevant developers",
+                "Version control sync before deletion",
+                "Comprehensive audit logging",
+                "Configuration-based deletion rules",
+                "Developer approval workflow",
+                "Manual execution control"
+              ].map((feature, idx) => (
+                <li key={idx} className="flex items-start gap-2 text-gray-300">
+                  <span className="text-green-400 mt-1">✓</span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-blue-500/20">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-yellow-400">
+              <Shield size={24} />
+              Performance Metrics
+            </h3>
+            <div className="space-y-4">
+              {[
+                { label: "Scan Time", value: "O(n) efficiency", desc: "Linear time complexity" },
+                { label: "Run Frequency", value: "Daily", desc: "Lightweight enough for daily execution" },
+                { label: "Request Limit", value: "Controlled", desc: "Limited number of deletion requests" },
+                { label: "Execution Control", value: "Manual", desc: "Developer-triggered only" }
+              ].map((metric, idx) => (
+                <div key={idx} className="flex justify-between items-start p-3 bg-slate-700/30 rounded">
+                  <div>
+                    <div className="font-semibold text-gray-200">{metric.label}</div>
+                    <div className="text-xs text-gray-500">{metric.desc}</div>
+                  </div>
+                  <div className="text-cyan-400 font-bold">{metric.value}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Team & Project Info */}
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-blue-500/20">
+          <h3 className="text-xl font-bold mb-4 text-blue-400">Project Information</h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-semibold mb-2 text-cyan-400">Team Members</h4>
+              <ul className="text-sm text-gray-300 space-y-1">
+                <li>• Aidan Johnson - Email Contact System</li>
+                <li>• Sterling Gayle - Potential Candidates</li>
+                <li>• Nestor Reyes - Potential Candidates</li>
+                <li>• Anil Lingala - Audit Summary</li>
+                <li>• Marco Ghercioiu - Audit Log & Initialize</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2 text-cyan-400">Technology Stack</h4>
+              <ul className="text-sm text-gray-300 space-y-1">
+                <li>• Oracle Database</li>
+                <li>• Oracle SQL Developer</li>
+                <li>• PL/SQL (Procedures & Functions)</li>
+                <li>• Git Version Control</li>
+                <li>• Email Notification System</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

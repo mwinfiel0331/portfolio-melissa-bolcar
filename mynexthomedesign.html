@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyNextHome - Solution Architecture & High-Level Design</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .tech-badge {
+            transition: all 0.3s ease;
+        }
+        .tech-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .flow-box {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .flow-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .metric-card {
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        .metric-card:hover {
+            border-left-width: 8px;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const CollapseSection = ({ title, children, defaultOpen = false, icon }) => {
+            const [isOpen, setIsOpen] = useState(defaultOpen);
+            
+            return (
+                <div className="mb-6">
+                    <button
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="w-full flex items-center justify-between p-4 glass-card hover:shadow-lg transition-all duration-300"
+                    >
+                        <div className="flex items-center space-x-3">
+                            <span className="text-2xl">{icon}</span>
+                            <h2 className="text-2xl font-bold section-header">{title}</h2>
+                        </div>
+                        <svg
+                            className={`w-6 h-6 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    {isOpen && (
+                        <div className="mt-4 p-6 glass-card">
+                            {children}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const TechBadge = ({ name, color }) => (
+            <span className={`tech-badge inline-block px-4 py-2 m-1 rounded-full text-sm font-semibold ${color}`}>
+                {name}
+            </span>
+        );
+
+        const FlowBox = ({ title, description, color }) => (
+            <div className={`flow-box p-4 rounded-lg ${color} border-2 border-gray-300`}>
+                <h4 className="font-bold mb-2">{title}</h4>
+                <p className="text-sm text-gray-700">{description}</p>
+            </div>
+        );
+
+        const MetricCard = ({ title, value, description }) => (
+            <div className="metric-card p-4 bg-white rounded-lg mb-3">
+                <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-semibold text-gray-700">{title}</h4>
+                    <span className="text-2xl font-bold text-purple-600">{value}</span>
+                </div>
+                <p className="text-sm text-gray-600">{description}</p>
+            </div>
+        );
+
+        const App = () => {
+            return (
+                <div className="max-w-7xl mx-auto">
+                    {/* Header */}
+                    <div className="text-center mb-8">
+                        <h1 className="text-5xl font-bold text-white mb-4">
+                            🏠 MyNextHome
+                        </h1>
+                        <p className="text-xl text-white opacity-90">
+                            Solution Architecture & High-Level Design
+                        </p>
+                        <p className="text-white opacity-75 mt-2">
+                            Real Estate Market Analytics Platform - Technical Overview
+                        </p>
+                    </div>
+
+                    {/* Executive Summary */}
+                    <CollapseSection title="Executive Summary" icon="📋" defaultOpen={true}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 className="text-xl font-bold mb-3 text-purple-700">Project Overview</h3>
+                                <p className="text-gray-700 mb-4">
+                                    MyNextHome is a real estate market analytics platform designed to help homebuyers 
+                                    and investors make data-driven decisions across the nationwide US real estate market.
+                                </p>
+                                <h4 className="font-semibold mb-2 text-purple-600">Core Capabilities:</h4>
+                                <ul className="list-disc list-inside space-y-1 text-gray-700">
+                                    <li>Multi-factor investment scoring (0-100 scale)</li>
+                                    <li>Historical market trend analysis</li>
+                                    <li>Demographic integration from US Census</li>
+                                    <li>RESTful API for data access</li>
+                                    <li>Comprehensive ETL pipeline</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-bold mb-3 text-purple-700">Key Metrics</h3>
+                                <MetricCard 
+                                    title="Geography Coverage" 
+                                    value="50K+" 
+                                    description="ZIP codes, counties, states across the US"
+                                />
+                                <MetricCard 
+                                    title="Data Points" 
+                                    value="36" 
+                                    description="Months of historical market data"
+                                />
+                                <MetricCard 
+                                    title="API Response Time" 
+                                    value="<500ms" 
+                                    description="p95 response time target"
+                                />
+                            </div>
+                        </div>
+                    </CollapseSection>
+
+                    {/* Technology Stack */}
+                    <CollapseSection title="Technology Stack" icon="🛠️" defaultOpen={true}>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <h3 className="text-lg font-bold mb-3 text-purple-700">Backend</h3>
+                                <TechBadge name="Node.js 18+" color="bg-green-100 text-green-800" />
+                                <TechBadge name="TypeScript 5.x" color="bg-blue-100 text-blue-800" />
+                                <TechBadge name="Fastify 5.x" color="bg-purple-100 text-purple-800" />
+                                <TechBadge name="Prisma 6.x" color="bg-indigo-100 text-indigo-800" />
+                                <TechBadge name="PostgreSQL 14+" color="bg-cyan-100 text-cyan-800" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold mb-3 text-purple-700">Data Processing</h3>
+                                <TechBadge name="Papa Parse" color="bg-orange-100 text-orange-800" />
+                                <TechBadge name="date-fns" color="bg-pink-100 text-pink-800" />
+                                <TechBadge name="BullMQ" color="bg-red-100 text-red-800" />
+                                <TechBadge name="Redis" color="bg-rose-100 text-rose-800" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold mb-3 text-purple-700">Development</h3>
+                                <TechBadge name="ESLint" color="bg-violet-100 text-violet-800" />
+                                <TechBadge name="tsx" color="bg-fuchsia-100 text-fuchsia-800" />
+                                <TechBadge name="npm" color="bg-emerald-100 text-emerald-800" />
+                                <TechBadge name="Git" color="bg-teal-100 text-teal-800" />
+                            </div>
+                        </div>
+                    </CollapseSection>
+
+                    {/* System Architecture */}
+                    <CollapseSection title="System Architecture" icon="🏗️">
+                        <div className="space-y-6">
+                            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg">
+                                <h3 className="text-xl font-bold mb-4 text-purple-700">High-Level Architecture</h3>
+                                <div className="space-y-4">
+                                    <FlowBox 
+                                        title="External Data Sources" 
+                                        description="Redfin Data Center (CSV), US Census Bureau API"
+                                        color="bg-blue-50"
+                                    />
+                                    <div className="text-center text-2xl">↓</div>
+                                    <FlowBox 
+                                        title="ETL Pipeline Layer" 
+                                        description="Redfin ETL, Census ETL, Investment Score Calculator"
+                                        color="bg-green-50"
+                                    />
+                                    <div className="text-center text-2xl">↓</div>
+                                    <FlowBox 
+                                        title="Data Storage Layer" 
+                                        description="PostgreSQL (Star Schema), Redis Cache (Future)"
+                                        color="bg-yellow-50"
+                                    />
+                                    <div className="text-center text-2xl">↓</div>
+                                    <FlowBox 
+                                        title="Application Layer" 
+                                        description="REST API (Fastify), GraphQL API (Future)"
+                                        color="bg-purple-50"
+                                    />
+                                    <div className="text-center text-2xl">↓</div>
+                                    <FlowBox 
+                                        title="Client Applications" 
+                                        description="Web App (Future), Mobile Apps (Future), API Consumers"
+                                        color="bg-pink-50"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-xl font-bold mb-4 text-purple-700">Architecture Patterns</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="p-4 bg-white rounded-lg border-2 border-purple-200">
+                                        <h4 className="font-bold text-purple-600 mb-2">Star Schema (Dimensional Model)</h4>
+                                        <p className="text-sm text-gray-700">Optimized for analytics with facts and dimensions</p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg border-2 border-purple-200">
+                                        <h4 className="font-bold text-purple-600 mb-2">ETL Pipeline Pattern</h4>
+                                        <p className="text-sm text-gray-700">Extract-Transform-Load for data integration</p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg border-2 border-purple-200">
+                                        <h4 className="font-bold text-purple-600 mb-2">Repository Pattern</h4>
+                                        <p className="text-sm text-gray-700">Abstract database operations via Prisma ORM</p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg border-2 border-purple-200">
+                                        <h4 className="font-bold text-purple-600 mb-2">RESTful API Design</h4>
+                                        <p className="text-sm text-gray-700">Resource-based URLs with HTTP verbs</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CollapseSection>
+
+                    {/* Data Model */}
+                    <CollapseSection title="Data Model" icon="📊">
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-xl font-bold mb-4 text-purple-700">Database Schema (Star Schema)</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <h4 className="font-semibold text-purple-600 mb-3">Dimension Tables</h4>
+                                        <div className="space-y-3">
+                                            <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                                                <h5 className="font-bold mb-2">dim_geography</h5>
+                                                <p className="text-sm mb-2">Geography hierarchy: Nation → State → MSA/County → City → ZIP</p>
+                                                <ul className="text-xs space-y-1 text-gray-700">
+                                                    <li>• Self-referencing for parent-child relationships</li>
+                                                    <li>• Supports all geo levels with FIPS/ZIP codes</li>
+                                                    <li>• Includes lat/lon coordinates</li>
+                                                </ul>
+                                            </div>
+                                            <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                                                <h5 className="font-bold mb-2">dim_date</h5>
+                                                <p className="text-sm mb-2">Time dimension for analytics</p>
+                                                <ul className="text-xs space-y-1 text-gray-700">
+                                                    <li>• Year, quarter, month, week attributes</li>
+                                                    <li>• Month/quarter end flags</li>
+                                                    <li>• Reserved for future time-based analytics</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold text-purple-600 mb-3">Fact Tables</h4>
+                                        <div className="space-y-3">
+                                            <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                                                <h5 className="font-bold mb-2">fact_market_metrics</h5>
+                                                <p className="text-sm mb-2">Market statistics from Redfin</p>
+                                                <ul className="text-xs space-y-1 text-gray-700">
+                                                    <li>• Pricing: median sale, list, price/sqft</li>
+                                                    <li>• Activity: sales, listings, inventory, DOM</li>
+                                                    <li>• Indicators: price drops, sold above list</li>
+                                                    <li>• YoY/MoM changes precomputed</li>
+                                                </ul>
+                                            </div>
+                                            <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                                                <h5 className="font-bold mb-2">fact_demographics</h5>
+                                                <p className="text-sm mb-2">US Census ACS 5-year data</p>
+                                                <ul className="text-xs space-y-1 text-gray-700">
+                                                    <li>• Population, income, rent metrics</li>
+                                                    <li>• Owner/renter shares</li>
+                                                    <li>• Education and commute statistics</li>
+                                                </ul>
+                                            </div>
+                                            <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                                                <h5 className="font-bold mb-2">fact_investment_score</h5>
+                                                <p className="text-sm mb-2">Calculated investment scores</p>
+                                                <ul className="text-xs space-y-1 text-gray-700">
+                                                    <li>• Overall + 4 component scores (0-100)</li>
+                                                    <li>• Raw features for transparency</li>
+                                                    <li>• Min-max normalized across all geos</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-purple-50 p-4 rounded-lg">
+                                <h4 className="font-bold text-purple-700 mb-2">Key Design Principles</h4>
+                                <ul className="space-y-2 text-sm">
+                                    <li className="flex items-start">
+                                        <span className="text-purple-500 mr-2">✓</span>
+                                        <span>Denormalized facts for query performance</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <span className="text-purple-500 mr-2">✓</span>
+                                        <span>UUID primary keys for distributed scalability</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <span className="text-purple-500 mr-2">✓</span>
+                                        <span>Unique constraints prevent duplicates (upsert-friendly)</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <span className="text-purple-500 mr-2">✓</span>
+                                        <span>Comprehensive indexes on filter/join columns</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </CollapseSection>
+
+                    {/* ETL Pipeline */}
+                    <CollapseSection title="ETL Pipeline & Data Flows" icon="🔄">
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-xl font-bold mb-4 text-purple-700">Pipeline Overview</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="p-4 bg-blue-50 rounded-lg">
+                                        <h4 className="font-bold text-blue-700 mb-2">1. Redfin Market ETL</h4>
+                                        <p className="text-sm mb-2">Parse CSV files, create geographies, load metrics</p>
+                                        <div className="text-xs text-gray-600">
+                                            <div>Input: CSV files</div>
+                                            <div>Output: Geographies + Market Metrics</div>
+                                            <div>Frequency: Daily (2 AM)</div>
+                                        </div>
+                                    </div>
+                                    <div className="p-4 bg-green-50 rounded-lg">
+                                        <h4 className="font-bold text-green-700 mb-2">2. Census Demographics ETL</h4>
+                                        <p className="text-sm mb-2">Fetch from Census API, map to geos, load demos</p>
+                                        <div className="text-xs text-gray-600">
+                                            <div>Input: Census ACS API</div>
+                                            <div>Output: Demographics</div>
+                                            <div>Frequency: Monthly (1st)</div>
+                                        </div>
+                                    </div>
+                                    <div className="p-4 bg-purple-50 rounded-lg">
+                                        <h4 className="font-bold text-purple-700 mb-2">3. Investment Score Calc</h4>
+                                        <p className="text-sm mb-2">Calculate features, normalize, compute scores</p>
+                                        <div className="text-xs text-gray-600">
+                                            <div>Input: Metrics + Demos</div>
+                                            <div>Output: Investment Scores</div>
+                                            <div>Frequency: Daily (4 AM)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg">
+                                <h3 className="text-xl font-bold mb-4 text-purple-700">Investment Scoring Algorithm</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="p-4 bg-white rounded-lg">
+                                        <h4 className="font-bold text-purple-600 mb-2">Growth Score (45%)</h4>
+                                        <ul className="text-sm space-y-1">
+                                            <li>• YoY price growth (60%)</li>
+                                            <li>• 3-year CAGR (40%)</li>
+                                            <li>• Min-max normalized</li>
+                                        </ul>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg">
+                                        <h4 className="font-bold text-purple-600 mb-2">Affordability Score (25%)</h4>
+                                        <ul className="text-sm space-y-1">
+                                            <li>• Inverted price-to-income (70%)</li>
+                                            <li>• Rent yield proxy (30%)</li>
+                                            <li>• Lower is better</li>
+                                        </ul>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg">
+                                        <h4 className="font-bold text-purple-600 mb-2">Liquidity Score (20%)</h4>
+                                        <ul className="text-sm space-y-1">
+                                            <li>• Inverted DOM trend (60%)</li>
+                                            <li>• Sales volume growth (40%)</li>
+                                            <li>• Faster = better</li>
+                                        </ul>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-lg">
+                                        <h4 className="font-bold text-purple-600 mb-2">Renter Market Score (10%)</h4>
+                                        <ul className="text-sm space-y-1">
+                                            <li>• Renter-occupied share</li>
+                                            <li>• Higher = better for investors</li>
+                                            <li>• Normalized across markets</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="mt-4 p-3 bg-purple-100 rounded">
+                                    <code className="text-sm">
+                                        Overall = (Growth × 0.45) + (Affordability × 0.25) + (Liquidity × 0.20) + (Renter × 0.10)
+                                    </code>
+                                </div>
+                            </div>
+                        </div>
+                    </CollapseSection>
+
+                    {/* REST API */}
+                    <CollapseSection title="REST API Reference" icon="🔌">
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-xl font-bold mb-4 text-purple-700">Core Endpoints</h3>
+                                <div className="space-y-4">
+                                    <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="font-bold text-green-700">GET /health</h4>
+                                            <span className="px-3 py-1 bg-green-200 text-green-800 rounded text-xs font-semibold">HEALTH</span>
+                                        </div>
+                                        <p className="text-sm text-gray-700">Health check endpoint</p>
+                                        <pre className="mt-2 text-xs">{'{"status": "ok", "timestamp": "2024-01-18T12:34:56.789Z"}'}</pre>
+                                    </div>
+
+                                    <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="font-bold text-blue-700">GET /markets/top</h4>
+                                            <span className="px-3 py-1 bg-blue-200 text-blue-800 rounded text-xs font-semibold">QUERY</span>
+                                        </div>
+                                        <p className="text-sm text-gray-700 mb-2">Top-ranked geographies by investment score</p>
+                                        <div className="text-xs text-gray-600">
+                                            <div><strong>Params:</strong> geo_type, limit, state, min_population</div>
+                                            <div><strong>Returns:</strong> Array of markets with scores, metrics, demographics</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="font-bold text-purple-700">GET /markets/:id/timeseries</h4>
+                                            <span className="px-3 py-1 bg-purple-200 text-purple-800 rounded text-xs font-semibold">ANALYTICS</span>
+                                        </div>
+                                        <p className="text-sm text-gray-700 mb-2">Historical market data for a geography</p>
+                                        <div className="text-xs text-gray-600">
+                                            <div><strong>Params:</strong> period_type, from, to</div>
+                                            <div><strong>Returns:</strong> Time series of market metrics</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="font-bold text-orange-700">GET /markets/:id/profile</h4>
+                                            <span className="px-3 py-1 bg-orange-200 text-orange-800 rounded text-xs font-semibold">DETAIL</span>
+                                        </div>
+                                        <p className="text-sm text-gray-700">Complete market profile with all data</p>
+                                    </div>
+
+                                    <div className="p-4 bg-pink-50 rounded-lg border-l-4 border-pink-500">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="font-bold text-pink-700">GET /markets/compare</h4>
+                                            <span className="px-3 py-1 bg-pink-200 text-pink-800 rounded text-xs font-semibold">COMPARE</span>
+                                        </div>
+                                        <p className="text-sm text-gray-700 mb-2">Side-by-side market comparison</p>
+                                        <div className="text-xs text-gray-600">
+                                            <div><strong>Params:</strong> ids (comma-separated, max 10)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="p-4 bg-white rounded-lg border-2 border-purple-200">
+                                    <h4 className="font-bold text-purple-700 mb-2">API Features</h4>
+                                    <ul className="text-sm space-y-1">
+                                        <li>✓ RESTful design with Fastify</li>
+                                        <li>✓ JSON response format</li>
+                                        <li>✓ Query parameter validation</li>
+                                        <li>✓ CORS support</li>
+                                        <li>✓ Error handling with proper status codes</li>
+                                    </ul>
+                                </div>
+                                <div className="p-4 bg-white rounded-lg border-2 border-purple-200">
+                                    <h4 className="font-bold text-purple-700 mb-2">Performance Targets</h4>
+                                    <ul className="text-sm space-y-1">
+                                        <li>• Response time: &lt;500ms (p95)</li>
+                                        <li>• Uptime: 99.9% SLA</li>
+                                        <li>• Concurrent users: 1,000+</li>
+                                        <li>• Rate limiting: 100 req/min (future)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </CollapseSection>
+
+                    {/* Infrastructure & Deployment */}
+                    <CollapseSection title="Infrastructure & Deployment" icon="☁️">
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h3 className="text-xl font-bold mb-4 text-purple-700">Development Environment</h3>
+                                    <div className="p-4 bg-blue-50 rounded-lg">
+                                        <ul className="space-y-2 text-sm">
+                                            <li className="flex items-center">
+                                                <span className="text-blue-500 mr-2">→</span>
+                                                Node.js 18+ runtime
+                                            </li>
+                                            <li className="flex items-center">
+                                                <span className="text-blue-500 mr-2">→</span>
+                                                PostgreSQL 14+ or SQLite
+                                            </li>
+                                            <li className="flex items-center">
+                                                <span className="text-blue-500 mr-2">→</span>
+                                                VS Code / IDE
+                                            </li>
+                                            <li className="flex items-center">
+                                                <span className="text-blue-500 mr-2">→</span>
+                                                Git version control
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold mb-4 text-purple-700">Production (Future)</h3>
+                                    <div className="p-4 bg-green-50 rounded-lg">
+                                        <ul className="space-y-2 text-sm">
+                                            <li className="flex items-center">
+                                                <span className="text-green-500 mr-2">→</span>
+                                                Cloud Provider (AWS/GCP/Azure)
+                                            </li>
+                                            <li className="flex items-center">
+                                                <span className="text-green-500 mr-2">→</span>
+                                                Load Balancer + Auto Scaling
+                                            </li>
+                                            <li className="flex items-center">
+                                                <span className="text-green-500 mr-2">→</span>
+                                                Managed PostgreSQL (RDS/Cloud SQL)
+                                            </li>
+                                            <li className="flex items-center">
+                                                <span className="text-green-500 mr-2">→</span>
+                                                Redis for caching & queues
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-xl font-bold mb-4 text-purple-700">Scalability Strategy</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="p-4 bg-purple-50 rounded-lg">
+                                        <h4 className="font-bold text-purple-700 mb-2">Horizontal Scaling</h4>
+                                        <ul className="text-sm space-y-1">
+                                            <li>• Stateless API servers</li>
+                                            <li>• Load balancing</li>
+                                            <li>• Read replicas</li>
+                                            <li>• Distributed caching</li>
+                                        </ul>
+                                    </div>
+                                    <div className="p-4 bg-purple-50 rounded-lg">
+                                        <h4 className="font-bold text-purple-700 mb-2">Vertical Scaling</h4>
+                                        <ul className="text-sm space-y-1">
+                                            <li>• Query optimization</li>
+                                            <li>• Index tuning</li>
+                                            <li>• Connection pooling</li>
+                                            <li>• Efficient algorithms</li>
+                                        </ul>
+                                    </div>
+                                    <div className="p-4 bg-purple-50 rounded-lg">
+                                        <h4 className="font-bold text-purple-700 mb-2">Data Partitioning</h4>
+                                        <ul className="text-sm space-y-1">
+                                            <li>• Date-based partitions</li>
+                                            <li>• Archive old data</li>
+                                            <li>• Separate OLTP/OLAP</li>
+                                            <li>• Caching strategies</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-orange-50 p-4 rounded-lg">
+                                <h4 className="font-bold text-orange-700 mb-2">Disaster Recovery</h4>
+                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <strong>RTO:</strong> &lt;4 hours
+                                    </div>
+                                    <div>
+                                        <strong>RPO:</strong> &lt;1 hour
+                                    </div>
+                                    <div>
+                                        <strong>Backups:</strong> Daily automated
+                                    </div>
+                                    <div>
+                                        <strong>Retention:</strong> 30 days
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CollapseSection>
+
+                    {/* Security */}
+                    <CollapseSection title="Security Architecture" icon="🔒">
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h3 className="text-xl font-bold mb-4 text-purple-700">Current Measures</h3>
+                                    <div className="space-y-3">
+                                        <div className="p-3 bg-green-50 rounded-lg">
+                                            <h4 className="font-semibold text-green-700">SQL Injection Protection</h4>
+                                            <p className="text-sm text-gray-700">Prisma ORM with prepared statements</p>
+                                        </div>
+                                        <div className="p-3 bg-green-50 rounded-lg">
+                                            <h4 className="font-semibold text-green-700">Environment Variables</h4>
+                                            <p className="text-sm text-gray-700">Secrets in .env, excluded from Git</p>
+                                        </div>
+                                        <div className="p-3 bg-green-50 rounded-lg">
+                                            <h4 className="font-semibold text-green-700">Input Validation</h4>
+                                            <p className="text-sm text-gray-700">TypeScript + Fastify schema validation</p>
+                                        </div>
+                                        <div className="p-3 bg-green-50 rounded-lg">
+                                            <h4 className="font-semibold text-green-700">Error Handling</h4>
+                                            <p className="text-sm text-gray-700">No sensitive data in error messages</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold mb-4 text-purple-700">Future Enhancements</h3>
+                                    <div className="space-y-3">
+                                        <div className="p-3 bg-blue-50 rounded-lg">
+                                            <h4 className="font-semibold text-blue-700">Authentication</h4>
+                                            <p className="text-sm text-gray-700">JWT tokens, OAuth 2.0, API keys</p>
+                                        </div>
+                                        <div className="p-3 bg-blue-50 rounded-lg">
+                                            <h4 className="font-semibold text-blue-700">Rate Limiting</h4>
+                                            <p className="text-sm text-gray-700">Per-IP and per-user limits, DDoS protection</p>
+                                        </div>
+                                        <div className="p-3 bg-blue-50 rounded-lg">
+                                            <h4 className="font-semibold text-blue-700">Encryption</h4>
+                                            <p className="text-sm text-gray-700">TLS/SSL, encryption at rest, secret management</p>
+                                        </div>
+                                        <div className="p-3 bg-blue-50 rounded-lg">
+                                            <h4 className="font-semibold text-blue-700">Compliance</h4>
+                                            <p className="text-sm text-gray-700">GDPR, SOC 2 Type II, penetration testing</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CollapseSection>
+
+                    {/* Future Roadmap */}
+                    <CollapseSection title="Product Roadmap" icon="🗺️">
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <h4 className="font-bold text-green-700">Q1 2024</h4>
+                                        <span className="text-green-600">✓ MVP</span>
+                                    </div>
+                                    <ul className="text-sm space-y-1">
+                                        <li>✓ Database schema</li>
+                                        <li>✓ ETL pipeline</li>
+                                        <li>✓ REST API</li>
+                                        <li>✓ Documentation</li>
+                                    </ul>
+                                </div>
+                                <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                                    <h4 className="font-bold text-blue-700 mb-2">Q2 2024</h4>
+                                    <ul className="text-sm space-y-1">
+                                        <li>• Additional data sources</li>
+                                        <li>• Advanced scoring</li>
+                                        <li>• Property-level data</li>
+                                        <li>• Performance optimization</li>
+                                    </ul>
+                                </div>
+                                <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                                    <h4 className="font-bold text-purple-700 mb-2">Q3 2024</h4>
+                                    <ul className="text-sm space-y-1">
+                                        <li>• Web application (React)</li>
+                                        <li>• Interactive maps</li>
+                                        <li>• User authentication</li>
+                                        <li>• Mobile-responsive design</li>
+                                    </ul>
+                                </div>
+                                <div className="p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                                    <h4 className="font-bold text-orange-700 mb-2">Q4 2024</h4>
+                                    <ul className="text-sm space-y-1">
+                                        <li>• Testing & QA</li>
+                                        <li>• CI/CD pipeline</li>
+                                        <li>• Monitoring</li>
+                                        <li>• Security hardening</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+                                <h4 className="font-bold text-purple-700 mb-3">2025+ Vision</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div>
+                                        <strong className="text-purple-600">Mobile Apps</strong>
+                                        <p className="text-gray-700">iOS & Android native applications</p>
+                                    </div>
+                                    <div>
+                                        <strong className="text-purple-600">ML Models</strong>
+                                        <p className="text-gray-700">Price prediction, market cycle detection</p>
+                                    </div>
+                                    <div>
+                                        <strong className="text-purple-600">API Marketplace</strong>
+                                        <p className="text-gray-700">Developer platform & integrations</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CollapseSection>
+
+                    {/* Footer */}
+                    <div className="mt-8 text-center text-white opacity-75">
+                        <p>MyNextHome Architecture Documentation</p>
+                        <p className="text-sm">Last Updated: January 2024 • Version 1.0</p>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

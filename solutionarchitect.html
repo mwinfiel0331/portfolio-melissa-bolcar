@@ -1,0 +1,439 @@
+import React, { useState } from 'react';
+import { Download, Mail, Linkedin, Award, TrendingUp, Cloud, Database, Shield, Zap, DollarSign, Users, Server, BarChart3, Activity, GitBranch, CheckCircle, XCircle, AlertTriangle, ArrowRight, ExternalLink, BookOpen } from 'lucide-react';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+export default function SolutionsArchitectPortfolio() {
+  const [activeTab, setActiveTab] = useState('overview');
+
+  // Metrics Data
+  const costSavings = [
+    { month: 'Jan', savings: 45000, baseline: 120000 },
+    { month: 'Feb', savings: 52000, baseline: 120000 },
+    { month: 'Mar', savings: 48000, baseline: 120000 },
+    { month: 'Apr', savings: 61000, baseline: 120000 },
+    { month: 'May', savings: 58000, baseline: 120000 },
+    { month: 'Jun', savings: 67000, baseline: 120000 },
+  ];
+
+  const performanceMetrics = [
+    { metric: 'Latency', before: 850, after: 120, target: 150 },
+    { metric: 'Throughput', before: 2500, after: 15000, target: 12000 },
+    { metric: 'Uptime %', before: 97.5, after: 99.95, target: 99.9 },
+    { metric: 'Error Rate', before: 2.8, after: 0.15, target: 0.5 },
+  ];
+
+  const technologyRadar = [
+    { technology: 'AWS', expertise: 95 },
+    { technology: 'Azure', expertise: 85 },
+    { technology: 'Kubernetes', expertise: 90 },
+    { technology: 'Microservices', expertise: 92 },
+    { technology: 'Serverless', expertise: 88 },
+    { technology: 'Security', expertise: 87 },
+    { technology: 'DevOps', expertise: 90 },
+    { technology: 'Data Arch', expertise: 85 },
+  ];
+
+  const projectImpact = [
+    { name: 'Cost Reduction', value: 42 },
+    { name: 'Performance', value: 28 },
+    { name: 'Scalability', value: 18 },
+    { name: 'Security', value: 12 },
+  ];
+
+  const COLORS = ['#8b5cf6', '#ec4899', '#3b82f6', '#10b981'];
+
+  const architectures = [
+    {
+      title: "Cloud-Native Microservices Platform",
+      client: "FinTech Startup",
+      challenge: "Monolithic application couldn't scale to meet 10x user growth projection",
+      solution: "Designed event-driven microservices architecture on AWS with EKS",
+      impact: {
+        cost: "-38% infrastructure costs",
+        performance: "12x throughput increase",
+        scalability: "Auto-scales to 100k concurrent users",
+        reliability: "99.95% uptime SLA"
+      },
+      technologies: ["AWS EKS", "Kafka", "PostgreSQL", "Redis", "API Gateway"],
+      metrics: [
+        { label: "Services Deployed", value: "24", trend: "up" },
+        { label: "Deployment Time", value: "-85%", trend: "down" },
+        { label: "Cost per Transaction", value: "$0.003", trend: "down" },
+        { label: "Monthly Active Users", value: "2.4M", trend: "up" }
+      ]
+    },
+    {
+      title: "Multi-Region Disaster Recovery",
+      client: "Healthcare Provider",
+      challenge: "No DR strategy, single point of failure risked patient data access",
+      solution: "Implemented active-active multi-region architecture with automated failover",
+      impact: {
+        cost: "ROI achieved in 8 months",
+        performance: "<2s failover time",
+        scalability: "3 regions, 99.999% availability",
+        reliability: "Zero data loss guarantee"
+      },
+      technologies: ["AWS RDS", "Route53", "CloudFront", "Lambda", "DynamoDB Global Tables"],
+      metrics: [
+        { label: "RTO", value: "< 5min", trend: "down" },
+        { label: "RPO", value: "0 seconds", trend: "down" },
+        { label: "Compliance", value: "HIPAA", trend: "up" },
+        { label: "Regions", value: "3", trend: "up" }
+      ]
+    },
+    {
+      title: "Serverless Data Pipeline",
+      client: "E-Commerce Platform",
+      challenge: "Processing 50TB daily data with expensive always-on infrastructure",
+      solution: "Event-driven serverless pipeline with Lambda, Step Functions, and S3",
+      impact: {
+        cost: "-67% data processing costs",
+        performance: "Real-time processing",
+        scalability: "Processes 200TB/day peak",
+        reliability: "Automatic retry and error handling"
+      },
+      technologies: ["AWS Lambda", "Step Functions", "S3", "Athena", "Glue", "QuickSight"],
+      metrics: [
+        { label: "Processing Cost", value: "-67%", trend: "down" },
+        { label: "Data Latency", value: "<30s", trend: "down" },
+        { label: "Daily Volume", value: "50TB", trend: "stable" },
+        { label: "Error Rate", value: "0.02%", trend: "down" }
+      ]
+    }
+  ];
+
+  const certifications = [
+    { name: "AWS Solutions Architect Professional", issuer: "Amazon Web Services", year: "2024" },
+    { name: "Azure Solutions Architect Expert", issuer: "Microsoft", year: "2024" },
+    { name: "Kubernetes Administrator (CKA)", issuer: "CNCF", year: "2023" },
+    { name: "TOGAF 9 Certified", issuer: "The Open Group", year: "2023" },
+  ];
+
+  const scrollToSection = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 text-white">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full bg-slate-900/90 backdrop-blur-md z-50 border-b border-blue-500/20">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              Solutions Architect
+            </h1>
+            <div className="flex gap-6">
+              {['Overview', 'Architectures', 'Metrics', 'Videos', 'Contact'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => scrollToSection(item.toLowerCase())}
+                  className="hover:text-blue-400 transition-colors text-sm font-medium"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section id="overview" className="min-h-screen flex items-center justify-center px-6 pt-20">
+        <div className="max-w-6xl w-full">
+          <div className="text-center mb-16">
+            <div className="mb-8 inline-block">
+              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-4xl font-bold mx-auto mb-6 shadow-2xl shadow-blue-500/50">
+                SA
+              </div>
+            </div>
+            <h2 className="text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              Cloud Solutions Architect
+            </h2>
+            <p className="text-xl text-gray-300 mb-8 leading-relaxed max-w-3xl mx-auto">
+              Designing scalable, resilient, and cost-effective cloud architectures that drive business value. 
+              Specialized in AWS/Azure multi-cloud environments, microservices, and enterprise transformations.
+            </p>
+            <div className="flex gap-4 justify-center mb-12">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
+                 className="p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                <Linkedin size={24} />
+              </a>
+              <a href="https://documentation-site-rho.vercel.app/" target="_blank" rel="noopener noreferrer"
+                 className="p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                <BookOpen size={24} />
+              </a>
+              <a href="mailto:architect@example.com"
+                 className="p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                <Mail size={24} />
+              </a>
+            </div>
+            <button 
+              onClick={() => window.open('/resume.pdf', '_blank')}
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 rounded-lg font-semibold flex items-center gap-2 mx-auto transition-all transform hover:scale-105 shadow-lg shadow-blue-500/50">
+              <Download size={20} />
+              Download Architecture Resume
+            </button>
+          </div>
+
+          {/* Key Metrics Dashboard */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {[
+              { icon: DollarSign, label: 'Total Cost Savings', value: '$2.4M', change: '+42%', color: 'green' },
+              { icon: Users, label: 'Projects Delivered', value: '28', change: '100% Success', color: 'blue' },
+              { icon: TrendingUp, label: 'Avg Performance Gain', value: '340%', change: 'vs baseline', color: 'purple' },
+              { icon: Shield, label: 'Security Incidents', value: '0', change: 'Last 24mo', color: 'cyan' }
+            ].map((metric, idx) => (
+              <div key={idx} className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-lg border border-blue-500/20 hover:border-blue-500/40 transition-all">
+                <metric.icon className={`text-${metric.color}-400 mb-3`} size={32} />
+                <div className="text-3xl font-bold mb-1">{metric.value}</div>
+                <div className="text-gray-400 text-sm mb-2">{metric.label}</div>
+                <div className={`text-${metric.color}-400 text-xs`}>{metric.change}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Certifications */}
+          <div className="bg-slate-800/30 backdrop-blur-sm rounded-lg p-8 border border-blue-500/20">
+            <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <Award className="text-blue-400" />
+              Certifications & Expertise
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {certifications.map((cert, idx) => (
+                <div key={idx} className="flex items-start gap-3 p-4 bg-slate-700/30 rounded-lg">
+                  <CheckCircle className="text-green-400 mt-1" size={20} />
+                  <div>
+                    <div className="font-semibold">{cert.name}</div>
+                    <div className="text-sm text-gray-400">{cert.issuer} • {cert.year}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Architecture Case Studies */}
+      <section id="architectures" className="py-20 px-6 bg-slate-900/30">
+        <div className="max-w-7xl mx-auto">
+          <h3 className="text-4xl font-bold mb-12 text-center">Architecture Solutions</h3>
+          
+          {architectures.map((arch, idx) => (
+            <div key={idx} className="mb-16 bg-slate-800/50 backdrop-blur-sm rounded-lg p-8 border border-blue-500/20">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h4 className="text-3xl font-bold mb-2 text-blue-400">{arch.title}</h4>
+                  <p className="text-gray-400">Client: {arch.client}</p>
+                </div>
+                <Cloud className="text-blue-400" size={48} />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8 mb-8">
+                <div className="bg-red-900/10 border-l-4 border-red-500 p-6 rounded">
+                  <h5 className="font-bold text-red-400 mb-3 flex items-center gap-2">
+                    <AlertTriangle size={20} />
+                    Challenge
+                  </h5>
+                  <p className="text-gray-300">{arch.challenge}</p>
+                </div>
+                <div className="bg-green-900/10 border-l-4 border-green-500 p-6 rounded">
+                  <h5 className="font-bold text-green-400 mb-3 flex items-center gap-2">
+                    <CheckCircle size={20} />
+                    Solution
+                  </h5>
+                  <p className="text-gray-300">{arch.solution}</p>
+                </div>
+              </div>
+
+              {/* Impact Metrics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                {arch.metrics.map((metric, i) => (
+                  <div key={i} className="bg-slate-700/30 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-blue-400 mb-1">{metric.value}</div>
+                    <div className="text-xs text-gray-400 uppercase">{metric.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Technologies */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {arch.technologies.map((tech, i) => (
+                  <span key={i} className="px-4 py-2 bg-blue-600/20 text-blue-300 rounded-full text-sm font-medium border border-blue-500/30">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+
+              {/* Business Impact */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-900/50 p-6 rounded-lg">
+                {Object.entries(arch.impact).map(([key, value]) => (
+                  <div key={key}>
+                    <div className="text-xs text-gray-500 uppercase mb-1">{key}</div>
+                    <div className="font-semibold text-cyan-400">{value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Metrics & Analytics */}
+      <section id="metrics" className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h3 className="text-4xl font-bold mb-12 text-center">Performance Analytics</h3>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            {/* Cost Savings Chart */}
+            <div className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-lg border border-blue-500/20">
+              <h4 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <DollarSign className="text-green-400" />
+                Monthly Cost Optimization
+              </h4>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={costSavings}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis dataKey="month" stroke="#94a3b8" />
+                  <YAxis stroke="#94a3b8" />
+                  <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #3b82f6' }} />
+                  <Legend />
+                  <Line type="monotone" dataKey="baseline" stroke="#ef4444" name="Before" strokeWidth={2} />
+                  <Line type="monotone" dataKey="savings" stroke="#10b981" name="After" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Technology Expertise Radar */}
+            <div className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-lg border border-blue-500/20">
+              <h4 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Activity className="text-blue-400" />
+                Technology Expertise
+              </h4>
+              <ResponsiveContainer width="100%" height={300}>
+                <RadarChart data={technologyRadar}>
+                  <PolarGrid stroke="#334155" />
+                  <PolarAngleAxis dataKey="technology" stroke="#94a3b8" />
+                  <PolarRadiusAxis angle={90} domain={[0, 100]} stroke="#94a3b8" />
+                  <Radar name="Expertise" dataKey="expertise" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Performance Improvements */}
+            <div className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-lg border border-blue-500/20">
+              <h4 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Zap className="text-yellow-400" />
+                Performance Improvements
+              </h4>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={performanceMetrics}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis dataKey="metric" stroke="#94a3b8" />
+                  <YAxis stroke="#94a3b8" />
+                  <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #3b82f6' }} />
+                  <Legend />
+                  <Bar dataKey="before" fill="#ef4444" name="Before" />
+                  <Bar dataKey="after" fill="#10b981" name="After" />
+                  <Bar dataKey="target" fill="#f59e0b" name="Target" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Project Impact Distribution */}
+            <div className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-lg border border-blue-500/20">
+              <h4 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <BarChart3 className="text-purple-400" />
+                Project Impact Areas
+              </h4>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={projectImpact}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {projectImpact.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Videos Section */}
+      <section id="videos" className="py-20 px-6 bg-slate-900/30">
+        <div className="max-w-6xl mx-auto">
+          <h3 className="text-4xl font-bold mb-12 text-center">Architecture Walkthroughs</h3>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg overflow-hidden border border-blue-500/20 hover:border-blue-500/40 transition-all group">
+              <div className="aspect-video bg-gradient-to-br from-blue-900 to-cyan-900 flex items-center justify-center relative">
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+                <div className="relative z-10 text-center">
+                  <Server size={64} className="text-white/80 mx-auto mb-4 group-hover:scale-110 transition-transform" />
+                  <p className="text-sm text-gray-300">Video placeholder - Add YouTube/Vimeo embed</p>
+                </div>
+              </div>
+              <div className="p-6">
+                <h4 className="text-xl font-bold mb-2">Multi-Cloud Architecture Design</h4>
+                <p className="text-gray-400">Deep dive into designing resilient multi-cloud architectures with AWS and Azure integration patterns.</p>
+              </div>
+            </div>
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg overflow-hidden border border-blue-500/20 hover:border-blue-500/40 transition-all group">
+              <div className="aspect-video bg-gradient-to-br from-purple-900 to-blue-900 flex items-center justify-center relative">
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+                <div className="relative z-10 text-center">
+                  <Database size={64} className="text-white/80 mx-auto mb-4 group-hover:scale-110 transition-transform" />
+                  <p className="text-sm text-gray-300">Video placeholder - Add YouTube/Vimeo embed</p>
+                </div>
+              </div>
+              <div className="p-6">
+                <h4 className="text-xl font-bold mb-2">Serverless Architecture Patterns</h4>
+                <p className="text-gray-400">Exploring event-driven serverless architectures and when to use them for maximum business value.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <h3 className="text-4xl font-bold mb-6">Let's Architect Your Next Solution</h3>
+          <p className="text-xl text-gray-300 mb-8">
+            Available for architecture consulting, cloud transformation projects, and technical advisory roles.
+          </p>
+          <div className="flex gap-4 justify-center">
+            <a href="mailto:architect@example.com" 
+               className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-500/50">
+              <Mail size={20} />
+              Schedule Consultation
+            </a>
+            <a href="https://documentation-site-rho.vercel.app/" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               className="px-8 py-4 bg-slate-700 hover:bg-slate-600 rounded-lg font-semibold flex items-center gap-2 transition-all">
+              <BookOpen size={20} />
+              Technical Documentation
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 px-6 border-t border-blue-500/20 text-center text-gray-400">
+        <p>© 2026 Solutions Architect Portfolio. Designing resilient systems for the cloud-native era.</p>
+      </footer>
+    </div>
+  );
+}

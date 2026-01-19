@@ -1,0 +1,26 @@
+Under application development, there are three areas that we are focusing on for this year - Versioning and Code reviews, Testing and Impact analysis.
+So, I will touch on the goals/benefits  each one of these and then have a brief overview of the schedule at the end
+
+Goal for versioning and code reviews was to provide an automatic versioning system for pl/sql code and to also provide a better process for doing code reviews.
+There are two tools we are incorporating which will help meet these goals. One is a home grown system called VCS sync and it automatically moves source code from the database to the cvs respository.
+
+The other is a tool called Crucible and it will be used to help facilitate code reviews. It provides an interface for developers and reviewers to interact - review code, share knowledge and identify defects.
+Incorporating these into our process should help improve software quality and productivity. Versioning of code will also be standard across adsit and automatic.
+
+Developers will also have the ability to revert to a previous code revision, if needed.
+
+The goal for testing is to provision a framework to allow us to develop automated test cases for a variety of applications whether they be user interfaces, batch loaders, or reports.
+
+Once we build up our regression test suite, we should see a reduction in testing time which will improve software quality. Accomplishments so far are that we chose Worksoft as our automated testing tool.
+
+Our plans going forward for worksoft is to automate some business objects and BRD test cases as a pilot, and train ba's and developers on how to automate test cases in 4th quarter. Also, within testing
+we plan on providing some unit test training and guidelines to java project developers. Finally, we plan on making the db comparison process used in Exadata more reusable so that it can be used in future projects.
+
+
+Another pain point within ADSIT is the ability to determine who or what will be impacted by a code change. Under app development initiative, we plan on standardizing and streamlining the process for doing that.
+
+Some of our accomplishments to date is that we have automated a database IA process and also completed a user interface for dbs.
+
+For 3q, we want to do the same thing for code existing on unix servers, also streamline the process for enabling auditing on db objects and develop an automatic database cleanup process.
+
+For 4q, we plan on deploying the new process for db and unix impact analysis. I think once developers begin using this new process, we will have an improvement in productivity and better be able to identify where testing and business readiness is needed.

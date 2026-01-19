@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Stats - Melissa Bolcar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInDown 0.8s ease 0.2s both;
+        }
+
+        .username-input {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease 0.4s both;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .input-group button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .input-group button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #dc2626;
+        }
+
+        .user-profile {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--primary-color);
+        }
+
+        .user-info h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .user-info .username {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info .bio {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .user-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+        }
+
+        .user-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .stat-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card p {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .repos-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .repos-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .repos-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .repo-card {
+            padding: 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .repo-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow);
+        }
+
+        .repo-card h3 {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .repo-card h3 a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .repo-card h3 a:hover {
+            text-decoration: underline;
+        }
+
+        .repo-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .repo-stats {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .repo-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .language-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .user-profile {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .user-avatar {
+                margin: 0 auto;
+            }
+
+            .user-meta {
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .input-group input {
+                min-width: 100%;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 GitHub Statistics Dashboard</h1>
+            <p>Explore GitHub profiles and statistics</p>
+        </div>
+
+        <div class="username-input">
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="usernameInput" 
+                    placeholder="Enter GitHub username (e.g., melissa-bolcar)"
+                    value="melissa-bolcar"
+                />
+                <button id="fetchBtn">Fetch Stats</button>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error hidden"></div>
+        
+        <div id="loadingIndicator" class="loading hidden">
+            <div class="loading-spinner"></div>
+            <p>Fetching GitHub data...</p>
+        </div>
+
+        <div id="statsContainer" class="hidden">
+            <div id="userProfile" class="user-profile"></div>
+            <div class="stats-grid" id="statsGrid"></div>
+            <div class="repos-section">
+                <h2>📦 Top Repositories</h2>
+                <div class="repos-grid" id="reposGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GITHUB_API = 'https://api.github.com';
+        let currentUsername = 'melissa-bolcar';
+
+        // DOM Elements
+        const usernameInput = document.getElementById('usernameInput');
+        const fetchBtn = document.getElementById('fetchBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const statsContainer = document.getElementById('statsContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const userProfile = document.getElementById('userProfile');
+        const statsGrid = document.getElementById('statsGrid');
+        const reposGrid = document.getElementById('reposGrid');
+
+        // Language colors
+        const languageColors = {
+            'JavaScript': '#f1e05a',
+            'TypeScript': '#3178c6',
+            'Python': '#3572A5',
+            'Java': '#b07219',
+            'HTML': '#e34c26',
+            'CSS': '#563d7c',
+            'React': '#61dafb',
+            'Vue': '#42b883',
+            'Go': '#00ADD8',
+            'Rust': '#dea584',
+            'Ruby': '#701516',
+            'PHP': '#4F5D95',
+            'C++': '#f34b7d',
+            'C#': '#178600',
+            'Swift': '#ffac45'
+        };
+
+        // Event Listeners
+        fetchBtn.addEventListener('click', handleFetchStats);
+        usernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleFetchStats();
+        });
+
+        // Initialize with default username
+        window.addEventListener('DOMContentLoaded', () => {
+            handleFetchStats();
+        });
+
+        async function handleFetchStats() {
+            const username = usernameInput.value.trim();
+            if (!username) {
+                showError('Please enter a GitHub username');
+                return;
+            }
+
+            currentUsername = username;
+            hideError();
+            showLoading();
+            hideStats();
+
+            try {
+                const [userData, reposData] = await Promise.all([
+                    fetchGitHubUser(username),
+                    fetchGitHubRepos(username)
+                ]);
+
+                displayUserProfile(userData);
+                displayStats(userData, reposData);
+                displayRepos(reposData);
+
+                hideLoading();
+                showStats();
+            } catch (error) {
+                hideLoading();
+                showError(error.message);
+            }
+        }
+
+        async function fetchGitHubUser(username) {
+            const response = await fetch(`${GITHUB_API}/users/${username}`);
+            if (!response.ok) {
+                throw new Error(`User "${username}" not found`);
+            }
+            return response.json();
+        }
+
+        async function fetchGitHubRepos(username) {
+            const response = await fetch(`${GITHUB_API}/users/${username}/repos?per_page=100&sort=updated`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch repositories');
+            }
+            return response.json();
+        }
+
+        function displayUserProfile(user) {
+            userProfile.innerHTML = `
+                <img src="${user.avatar_url}" alt="${user.name || user.login}" class="user-avatar">
+                <div class="user-info">
+                    <h2>${user.name || user.login}</h2>
+                    <p class="username">@${user.login}</p>
+                    ${user.bio ? `<p class="bio">${user.bio}</p>` : ''}
+                    <div class="user-meta">
+                        ${user.location ? `<span>📍 ${user.location}</span>` : ''}
+                        ${user.company ? `<span>🏢 ${user.company}</span>` : ''}
+                        ${user.blog ? `<span>🔗 <a href="${user.blog}" target="_blank">${user.blog}</a></span>` : ''}
+                        ${user.twitter_username ? `<span>🐦 @${user.twitter_username}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayStats(user, repos) {
+            const totalStars = repos.reduce((sum, repo) => sum + repo.stargazers_count, 0);
+            const totalForks = repos.reduce((sum, repo) => sum + repo.forks_count, 0);
+            const totalWatchers = repos.reduce((sum, repo) => sum + repo.watchers_count, 0);
+
+            const stats = [
+                { icon: '📚', value: user.public_repos, label: 'Public Repositories' },
+                { icon: '⭐', value: totalStars, label: 'Total Stars' },
+                { icon: '🔱', value: totalForks, label: 'Total Forks' },
+                { icon: '👥', value: user.followers, label: 'Followers' },
+                { icon: '👤', value: user.following, label: 'Following' },
+                { icon: '👁️', value: totalWatchers, label: 'Total Watchers' }
+            ];
+
+            statsGrid.innerHTML = stats.map(stat => `
+                <div class="stat-card">
+                    <div class="icon">${stat.icon}</div>
+                    <h3>${stat.value.toLocaleString()}</h3>
+                    <p>${stat.label}</p>
+                </div>
+            `).join('');
+        }
+
+        function displayRepos(repos) {
+            // Sort by stars and take top 10
+            const topRepos = repos
+                .filter(repo => !repo.fork)
+                .sort((a, b) => b.stargazers_count - a.stargazers_count)
+                .slice(0, 10);
+
+            if (topRepos.length === 0) {
+                reposGrid.innerHTML = '<p>No repositories found</p>';
+                return;
+            }
+
+            reposGrid.innerHTML = topRepos.map(repo => {
+                const languageColor = languageColors[repo.language] || '#858585';
+                return `
+                    <div class="repo-card">
+                        <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
+                        ${repo.description ? `<p class="repo-description">${repo.description}</p>` : ''}
+                        <div class="repo-stats">
+                            ${repo.language ? `
+                                <span class="repo-stat">
+                                    <span class="language-dot" style="background: ${languageColor}"></span>
+                                    ${repo.language}
+                                </span>
+                            ` : ''}
+                            <span class="repo-stat">⭐ ${repo.stargazers_count}</span>
+                            <span class="repo-stat">🔱 ${repo.forks_count}</span>
+                            ${repo.license ? `<span class="repo-stat">📄 ${repo.license.name}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showLoading() {
+            loadingIndicator.classList.remove('hidden');
+            fetchBtn.disabled = true;
+        }
+
+        function hideLoading() {
+            loadingIndicator.classList.add('hidden');
+            fetchBtn.disabled = false;
+        }
+
+        function showStats() {
+            statsContainer.classList.remove('hidden');
+        }
+
+        function hideStats() {
+            statsContainer.classList.add('hidden');
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorMessage.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
