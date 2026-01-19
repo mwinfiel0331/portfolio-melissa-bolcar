@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Investment - AI-Powered Stock Analysis Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #0066FF;
+            --deep-blue: #0047AB;
+            --light-blue: #4D94FF;
+            --sky-blue: #E6F2FF;
+            --dark: #0A1628;
+            --text: #1E293B;
+            --text-light: #64748B;
+            --white: #FFFFFF;
+            --gray-light: #F8FAFC;
+            --gray-border: #E2E8F0;
+            --success: #10B981;
+            --warning: #F97316;
+            --danger: #EF4444;
+            --purple: #8B5CF6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--white);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .logo {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 4rem 4rem;
+            position: relative;
+            background: linear-gradient(135deg, var(--sky-blue) 0%, var(--white) 50%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: radial-gradient(circle at top right, var(--light-blue) 0%, transparent 70%);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1100px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            color: var(--dark);
+        }
+
+        .hero h1 .accent {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+        }
+
+        .hero .description {
+            font-size: 1.25rem;
+            color: var(--text);
+            max-width: 900px;
+            margin: 0 auto 1rem;
+            line-height: 1.9;
+            font-weight: 500;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--gray-border);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 102, 255, 0.15);
+        }
+
+        .stat-number {
+            font-family: 'Sora', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        section {
+            padding: 5rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .section-title .accent {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .collapsible {
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--gray-border);
+            background: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .collapsible:hover {
+            box-shadow: 0 4px 16px rgba(0, 102, 255, 0.1);
+        }
+
+        .collapsible-header {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .collapsible-header:hover {
+            background: var(--gray-light);
+        }
+
+        .collapsible-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Sora', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .collapsible-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible.active .collapsible-icon {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .collapsible.active .collapsible-content {
+            max-height: 5000px;
+        }
+
+        .collapsible-body {
+            padding: 2rem;
+            border-top: 1px solid var(--gray-border);
+        }
+
+        .card {
+            background: var(--gray-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .card h3, .card h4 {
+            font-family: 'Sora', sans-serif;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .card ul li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text);
+        }
+
+        .card ul li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-blue {
+            background: var(--sky-blue);
+            color: var(--primary-blue);
+        }
+
+        .badge-green {
+            background: #D1FAE5;
+            color: var(--success);
+        }
+
+        .badge-orange {
+            background: #FED7AA;
+            color: var(--warning);
+        }
+
+        .badge-purple {
+            background: #EDE9FE;
+            color: var(--purple);
+        }
+
+        .badge-red {
+            background: #FEE2E2;
+            color: var(--danger);
+        }
+
+        .badge-pink {
+            background: #FCE7F3;
+            color: #EC4899;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--gray-border);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 102, 255, 0.12);
+            border-color: var(--primary-blue);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .tech-badge {
+            padding: 0.5rem 1rem;
+            background: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .tech-badge:hover {
+            background: var(--sky-blue);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            color: var(--white);
+            text-align: center;
+        }
+
+        .metric-value {
+            font-family: 'Sora', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .code-block {
+            background: #1E293B;
+            color: #E2E8F0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        .code-block code {
+            color: #F8FAFC;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, var(--sky-blue) 0%, transparent 100%);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 2rem;
+            }
+
+            .hero {
+                padding: 6rem 2rem 3rem;
+            }
+
+            section {
+                padding: 3rem 2rem;
+            }
+
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 16px;
+            margin: 3rem 0;
+        }
+
+        .cta-section h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 2.5rem;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--white);
+            color: var(--primary-blue);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const CollapseSection = ({ title, icon, children }) => {
+            const [isOpen, setIsOpen] = useState(false);
+
+            return (
+                <div className={`collapsible ${isOpen ? 'active' : ''}`}>
+                    <div className="collapsible-header" onClick={() => setIsOpen(!isOpen)}>
+                        <div className="collapsible-title">
+                            <span>{icon}</span>
+                            <span>{title}</span>
+                        </div>
+                        <div className="collapsible-icon">
+                            {isOpen ? '▲' : '▼'}
+                        </div>
+                    </div>
+                    <div className="collapsible-content">
+                        <div className="collapsible-body">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            return (
+                <div>
+                    <nav>
+                        <div className="logo">Melissa Bolcar</div>
+                        <ul className="nav-links">
+                            <li><a href="index.html#about">About</a></li>
+                            <li><a href="index.html#current-projects">Current Projects</a></li>
+                            <li><a href="index.html#work">Work</a></li>
+                            <li><a href="index.html#github">GitHub</a></li>
+                        </ul>
+                    </nav>
+
+                    <div className="hero">
+                        <div className="hero-content">
+                            <h1>
+                                AI-Powered <span className="accent">Stock Analysis</span> Platform
+                            </h1>
+                            <p className="description">
+                                Professional-grade investment research powered by multi-source data integration, 
+                                proprietary scoring algorithms, and advanced sentiment analysis.
+                            </p>
+                            <p>
+                                Built with Python, Streamlit, and PostgreSQL. Deployed on Railway with custom domain support.
+                            </p>
+
+                            <div className="stats-grid">
+                                <div className="stat-card">
+                                    <div className="stat-number">0-100</div>
+                                    <div className="stat-label">Investment Score</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-number">5</div>
+                                    <div className="stat-label">Analysis Factors</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-number">3</div>
+                                    <div className="stat-label">Data Sources</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-number">99.9%</div>
+                                    <div className="stat-label">Uptime SLA</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <section>
+                        <h2 className="section-title">
+                            Platform <span className="accent">Architecture</span>
+                        </h2>
+
+                        {/* Core Features */}
+                        <CollapseSection title="Core Features" icon="⭐">
+                            <div className="feature-grid">
+                                <div className="feature-card">
+                                    <div className="feature-icon">📊</div>
+                                    <h3>Stock Analysis Dashboard</h3>
+                                    <p>Comprehensive single-stock analysis with real-time data, historical trends, and interactive candlestick charts.</p>
+                                    <div style={{ marginTop: '1rem' }}>
+                                        <span className="badge badge-blue">Real-time Data</span>
+                                        <span className="badge badge-green" style={{ marginLeft: '0.5rem' }}>Interactive Charts</span>
+                                    </div>
+                                </div>
+
+                                <div className="feature-card">
+                                    <div className="feature-icon">📈</div>
+                                    <h3>Portfolio Comparison</h3>
+                                    <p>Side-by-side comparison of up to 10 stocks with ranking, metrics tables, and correlation analysis.</p>
+                                    <div style={{ marginTop: '1rem' }}>
+                                        <span className="badge badge-purple">Multi-Stock</span>
+                                        <span className="badge badge-orange" style={{ marginLeft: '0.5rem' }}>Ranking</span>
+                                    </div>
+                                </div>
+
+                                <div className="feature-card">
+                                    <div className="feature-icon">🎯</div>
+                                    <h3>Investment Scoring</h3>
+                                    <p>Proprietary 0-100 scoring algorithm analyzing valuation, growth, profitability, health, and sentiment.</p>
+                                    <div style={{ marginTop: '1rem' }}>
+                                        <span className="badge badge-green">AI-Powered</span>
+                                        <span className="badge badge-blue" style={{ marginLeft: '0.5rem' }}>Multi-Factor</span>
+                                    </div>
+                                </div>
+
+                                <div className="feature-card">
+                                    <div className="feature-icon">💬</div>
+                                    <h3>Sentiment Analysis</h3>
+                                    <p>Dual-mode analysis with VADER (fast) and FinBERT (accurate) for news and market perception.</p>
+                                    <div style={{ marginTop: '1rem' }}>
+                                        <span className="badge badge-purple">VADER</span>
+                                        <span className="badge badge-pink" style={{ marginLeft: '0.5rem' }}>FinBERT</span>
+                                    </div>
+                                </div>
+
+                                <div className="feature-card">
+                                    <div className="feature-icon">👁️</div>
+                                    <h3>Watchlist Management</h3>
+                                    <p>Track favorite stocks with quick performance overview and persistent storage across sessions.</p>
+                                    <div style={{ marginTop: '1rem' }}>
+                                        <span className="badge badge-green">PostgreSQL</span>
+                                        <span className="badge badge-blue" style={{ marginLeft: '0.5rem' }}>Persistent</span>
+                                    </div>
+                                </div>
+
+                                <div className="feature-card">
+                                    <div className="feature-icon">🌍</div>
+                                    <h3>Market Overview</h3>
+                                    <p>Broad market analysis with sector breakdowns, top performers, and trending stocks.</p>
+                                    <div style={{ marginTop: '1rem' }}>
+                                        <span className="badge badge-orange">Sectors</span>
+                                        <span className="badge badge-purple" style={{ marginLeft: '0.5rem' }}>Trends</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        {/* Data Architecture */}
+                        <CollapseSection title="Data Architecture & Integration" icon="🔄">
+                            <div className="grid grid-2">
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Multi-Source Data Pipeline</h3>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)' }}>
+                                        <h4 style={{ color: 'var(--primary-blue)' }}>Primary: Yahoo Finance</h4>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Real-time prices, historical OHLCV, dividends, stock splits</p>
+                                        <div className="tech-stack">
+                                            <span className="tech-badge">yfinance</span>
+                                            <span className="tech-badge">Free</span>
+                                            <span className="tech-badge">99.9% uptime</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="card" style={{ borderLeft: '4px solid var(--success)', marginTop: '1rem' }}>
+                                        <h4 style={{ color: 'var(--success)' }}>Backup: Polygon.io</h4>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Professional-grade fallback for reliability</p>
+                                        <div className="tech-stack">
+                                            <span className="tech-badge">polygon-api</span>
+                                            <span className="tech-badge">5 req/min</span>
+                                            <span className="tech-badge">99.99% SLA</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="card" style={{ borderLeft: '4px solid var(--purple)', marginTop: '1rem' }}>
+                                        <h4 style={{ color: 'var(--purple)' }}>Enhancement: Finnhub</h4>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Fundamentals, news, analyst estimates, earnings</p>
+                                        <div className="tech-stack">
+                                            <span className="tech-badge">finnhub-python</span>
+                                            <span className="tech-badge">60 req/min</span>
+                                            <span className="tech-badge">High uptime</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Intelligent Failover System</h3>
+                                    <div className="code-block">
+                                        <code>{`class DataIngestion:
+    def get_stock_data(self, symbol):
+        # Try primary source
+        data = self.fetch_yahoo(symbol)
+        
+        # Automatic failover
+        if not data:
+            data = self.fetch_polygon(symbol)
+        
+        # Enhance with fundamentals
+        fundamentals = self.fetch_finnhub(symbol)
+        
+        # Merge and normalize
+        return self.merge_sources(
+            data, fundamentals
+        )
+        
+        # Cache for performance
+        self.cache_to_db(symbol, data)`}</code>
+                                    </div>
+
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Data Pipeline Features</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Automatic failover on API failure</li>
+                                            <li>Data normalization across sources</li>
+                                            <li>Rate limit management</li>
+                                            <li>Error recovery & retry logic</li>
+                                            <li>Graceful degradation</li>
+                                            <li>PostgreSQL caching (60min TTL)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '2rem' }}>
+                                <h3 style={{ marginBottom: '1.5rem' }}>Future Data Sources Roadmap</h3>
+                                <div className="grid grid-3">
+                                    <div className="card">
+                                        <h4>Phase 1: Alpha Vantage</h4>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Q1 2026 - Technical indicators & global markets</p>
+                                        <span className="badge badge-orange">Priority: HIGH</span>
+                                    </div>
+                                    <div className="card">
+                                        <h4>Phase 2: Advanced Analytics</h4>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Q2 2026 - Multi-source validation & quality scoring</p>
+                                        <span className="badge badge-blue">Priority: MEDIUM</span>
+                                    </div>
+                                    <div className="card">
+                                        <h4>Phase 3: Polygon Pro</h4>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Q3 2026 - Options data & high-frequency trading</p>
+                                        <span className="badge badge-purple">Priority: LOW</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        {/* Investment Scoring Algorithm */}
+                        <CollapseSection title="Investment Scoring Algorithm" icon="🧮">
+                            <div className="grid grid-2">
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Multi-Factor Scoring System</h3>
+                                    <p style={{ marginBottom: '1.5rem', color: 'var(--text-light)' }}>
+                                        Proprietary algorithm that analyzes stocks across five key dimensions with weighted scoring (0-100 scale).
+                                    </p>
+
+                                    <div className="card" style={{ borderLeft: '4px solid #3B82F6' }}>
+                                        <h4 style={{ color: '#3B82F6' }}>1. Valuation Score (25%)</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>P/E ratio scoring (lower is better)</li>
+                                            <li>P/B ratio (price-to-book)</li>
+                                            <li>P/S ratio (price-to-sales)</li>
+                                            <li>PEG ratio (growth-adjusted)</li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="card" style={{ borderLeft: '4px solid #10B981', marginTop: '1rem' }}>
+                                        <h4 style={{ color: '#10B981' }}>2. Growth Score (25%)</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Quarterly revenue growth (QoQ)</li>
+                                            <li>Annual revenue growth (YoY)</li>
+                                            <li>Growth consistency analysis</li>
+                                            <li>Growth acceleration trends</li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="card" style={{ borderLeft: '4px solid #F59E0B', marginTop: '1rem' }}>
+                                        <h4 style={{ color: '#F59E0B' }}>3. Profitability Score (20%)</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Return on Equity (ROE)</li>
+                                            <li>Return on Assets (ROA)</li>
+                                            <li>Net profit margin</li>
+                                            <li>Operating margin</li>
+                                            <li>Gross margin analysis</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div className="card" style={{ borderLeft: '4px solid #8B5CF6' }}>
+                                        <h4 style={{ color: '#8B5CF6' }}>4. Financial Health (15%)</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Debt-to-equity ratio</li>
+                                            <li>Current ratio (liquidity)</li>
+                                            <li>Quick ratio assessment</li>
+                                            <li>Operating cash flow</li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="card" style={{ borderLeft: '4px solid #EC4899', marginTop: '1rem' }}>
+                                        <h4 style={{ color: '#EC4899' }}>5. Sentiment Score (15%)</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>News sentiment (VADER/FinBERT)</li>
+                                            <li>Analyst ratings aggregation</li>
+                                            <li>Market perception analysis</li>
+                                            <li>Social media trends (future)</li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="metric-card" style={{ marginTop: '1rem' }}>
+                                        <div className="metric-value">78</div>
+                                        <div className="metric-label">Example Score: BUY Recommendation</div>
+                                        <div style={{ marginTop: '1rem', fontSize: '0.9rem', opacity: 0.9 }}>
+                                            80-100: Strong Buy | 60-79: Buy | 40-59: Hold | 20-39: Sell | 0-19: Strong Sell
+                                        </div>
+                                    </div>
+
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Algorithm Features</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Dynamic weighting based on market conditions</li>
+                                            <li>Sector-specific normalization</li>
+                                            <li>Historical trend analysis</li>
+                                            <li>Confidence level scoring</li>
+                                            <li>Real-time score updates</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        {/* Technical Stack */}
+                        <CollapseSection title="Technical Stack & Architecture" icon="⚙️">
+                            <div className="grid grid-3">
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Backend</h3>
+                                    <div className="card">
+                                        <h4>Core Framework</h4>
+                                        <div className="tech-stack">
+                                            <span className="tech-badge">Python 3.9+</span>
+                                            <span className="tech-badge">Streamlit</span>
+                                            <span className="tech-badge">FastAPI (future)</span>
+                                        </div>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Data & Analytics</h4>
+                                        <div className="tech-stack">
+                                            <span className="tech-badge">pandas</span>
+                                            <span className="tech-badge">numpy</span>
+                                            <span className="tech-badge">yfinance</span>
+                                            <span className="tech-badge">polygon-api</span>
+                                            <span className="tech-badge">finnhub</span>
+                                        </div>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>AI & ML</h4>
+                                        <div className="tech-stack">
+                                            <span className="tech-badge">VADER</span>
+                                            <span className="tech-badge">FinBERT</span>
+                                            <span className="tech-badge">transformers</span>
+                                            <span className="tech-badge">PyTorch</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Database</h3>
+                                    <div className="card">
+                                        <h4>PostgreSQL</h4>
+                                        <div className="tech-stack">
+                                            <span className="tech-badge">SQLAlchemy ORM</span>
+                                            <span className="tech-badge">psycopg2</span>
+                                            <span className="tech-badge">Alembic</span>
+                                        </div>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Caching Strategy</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>60-minute TTL for stock data</li>
+                                            <li>JSONB storage for flexibility</li>
+                                            <li>Indexed queries</li>
+                                            <li>Connection pooling</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Future Redis</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                            Session management, distributed caching, real-time pub/sub
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Visualization</h3>
+                                    <div className="card">
+                                        <h4>Charting Libraries</h4>
+                                        <div className="tech-stack">
+                                            <span className="tech-badge">Plotly</span>
+                                            <span className="tech-badge">Matplotlib</span>
+                                            <span className="tech-badge">Seaborn</span>
+                                        </div>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Chart Types</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Candlestick charts (OHLC)</li>
+                                            <li>Radar charts (score breakdown)</li>
+                                            <li>Bar charts (volume, metrics)</li>
+                                            <li>Line charts (trends)</li>
+                                            <li>Correlation matrices</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Interactive Features</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                            Zoom, pan, tooltips, legends, time period selection
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '2rem' }}>
+                                <h3 style={{ marginBottom: '1.5rem' }}>Deployment Architecture</h3>
+                                <div className="grid grid-2">
+                                    <div className="card">
+                                        <h4>Production (Railway)</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Automatic GitHub deployments</li>
+                                            <li>PostgreSQL managed service</li>
+                                            <li>Custom domain (nextinvestment.ai)</li>
+                                            <li>SSL certificate automation</li>
+                                            <li>Environment variable management</li>
+                                            <li>Health checks & monitoring</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card">
+                                        <h4>Alternative Platforms</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Streamlit Cloud (backup)</li>
+                                            <li>Render (tested)</li>
+                                            <li>Heroku (legacy option)</li>
+                                            <li>DigitalOcean App Platform</li>
+                                            <li>Google Cloud Run</li>
+                                            <li>AWS Elastic Beanstalk</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        {/* Performance & Optimization */}
+                        <CollapseSection title="Performance & Optimization" icon="⚡">
+                            <div className="grid grid-2">
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Response Times</h3>
+                                    <div className="grid grid-2">
+                                        <div className="metric-card">
+                                            <div className="metric-value">&lt;500ms</div>
+                                            <div className="metric-label">Cached Data</div>
+                                        </div>
+                                        <div className="metric-card" style={{ background: 'linear-gradient(135deg, var(--success) 0%, #059669 100%)' }}>
+                                            <div className="metric-value">1-3s</div>
+                                            <div className="metric-label">Fresh Data Fetch</div>
+                                        </div>
+                                        <div className="metric-card" style={{ background: 'linear-gradient(135deg, var(--purple) 0%, #7C3AED 100%)' }}>
+                                            <div className="metric-value">2-5s</div>
+                                            <div className="metric-label">Portfolio Comparison</div>
+                                        </div>
+                                        <div className="metric-card" style={{ background: 'linear-gradient(135deg, var(--warning) 0%, #EA580C 100%)' }}>
+                                            <div className="metric-value">&lt;1s</div>
+                                            <div className="metric-label">Chart Rendering</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Optimization Strategies</h3>
+                                    <div className="card">
+                                        <h4>Database Optimization</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Indexed queries on symbol & timestamp</li>
+                                            <li>Connection pooling (max 10 connections)</li>
+                                            <li>Query result caching</li>
+                                            <li>Efficient JSONB operations</li>
+                                            <li>Automatic cache invalidation</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>API Optimization</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Rate limit management</li>
+                                            <li>Batch API requests</li>
+                                            <li>Parallel data fetching</li>
+                                            <li>Request deduplication</li>
+                                            <li>Exponential backoff on failures</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '2rem' }}>
+                                <h3 style={{ marginBottom: '1.5rem' }}>Scalability Targets</h3>
+                                <div className="grid grid-4">
+                                    <div className="card">
+                                        <h4>Current Capacity</h4>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-light)' }}>50+ concurrent users</p>
+                                        <span className="badge badge-green">Production Ready</span>
+                                    </div>
+                                    <div className="card">
+                                        <h4>Near-term Goal</h4>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-light)' }}>1,000+ concurrent users</p>
+                                        <span className="badge badge-blue">Q2 2026</span>
+                                    </div>
+                                    <div className="card">
+                                        <h4>Uptime SLA</h4>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-light)' }}>99.9% availability</p>
+                                        <span className="badge badge-purple">Committed</span>
+                                    </div>
+                                    <div className="card">
+                                        <h4>Data Freshness</h4>
+                                        <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-light)' }}>15-min delay (real-time)</p>
+                                        <span className="badge badge-orange">Market Data</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        {/* Security & Compliance */}
+                        <CollapseSection title="Security & Compliance" icon="🔒">
+                            <div className="grid grid-2">
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Current Security Measures</h3>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--success)' }}>
+                                        <h4 style={{ color: 'var(--success)' }}>SQL Injection Protection</h4>
+                                        <p style={{ fontSize: '0.9rem' }}>SQLAlchemy ORM with prepared statements and parameterized queries</p>
+                                    </div>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--success)', marginTop: '1rem' }}>
+                                        <h4 style={{ color: 'var(--success)' }}>Environment Security</h4>
+                                        <p style={{ fontSize: '0.9rem' }}>API keys and secrets in environment variables, excluded from version control</p>
+                                    </div>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--success)', marginTop: '1rem' }}>
+                                        <h4 style={{ color: 'var(--success)' }}>Input Validation</h4>
+                                        <p style={{ fontSize: '0.9rem' }}>Stock symbol validation, user input sanitization, type checking</p>
+                                    </div>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--success)', marginTop: '1rem' }}>
+                                        <h4 style={{ color: 'var(--success)' }}>TLS/SSL Encryption</h4>
+                                        <p style={{ fontSize: '0.9rem' }}>Automatic SSL certificates via Railway, HTTPS-only connections</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Future Enhancements</h3>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)' }}>
+                                        <h4 style={{ color: 'var(--primary-blue)' }}>Authentication & Authorization</h4>
+                                        <p style={{ fontSize: '0.9rem' }}>JWT tokens, OAuth 2.0, API keys, role-based access control</p>
+                                    </div>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)', marginTop: '1rem' }}>
+                                        <h4 style={{ color: 'var(--primary-blue)' }}>Rate Limiting</h4>
+                                        <p style={{ fontSize: '0.9rem' }}>Per-IP and per-user limits, DDoS protection, traffic shaping</p>
+                                    </div>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)', marginTop: '1rem' }}>
+                                        <h4 style={{ color: 'var(--primary-blue)' }}>Data Encryption</h4>
+                                        <p style={{ fontSize: '0.9rem' }}>Encryption at rest for database, secret management with Vault</p>
+                                    </div>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)', marginTop: '1rem' }}>
+                                        <h4 style={{ color: 'var(--primary-blue)' }}>Compliance & Auditing</h4>
+                                        <p style={{ fontSize: '0.9rem' }}>GDPR compliance, SOC 2 Type II certification, penetration testing</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        {/* Development Roadmap */}
+                        <CollapseSection title="Development Roadmap" icon="🗺️">
+                            <div className="grid grid-3">
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Q1 2026</h3>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--success)' }}>
+                                        <h4>✅ Completed</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Core platform architecture</li>
+                                            <li>Multi-source data integration</li>
+                                            <li>Investment scoring algorithm</li>
+                                            <li>PostgreSQL caching</li>
+                                            <li>Railway deployment</li>
+                                            <li>Custom domain setup</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>🚀 In Progress</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Alpha Vantage integration</li>
+                                            <li>Technical indicators</li>
+                                            <li>Advanced charting features</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Q2 2026</h3>
+                                    <div className="card">
+                                        <h4>Planned Features</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Multi-source data validation</li>
+                                            <li>Data quality scoring</li>
+                                            <li>User authentication</li>
+                                            <li>Personalized watchlists</li>
+                                            <li>Email alerts & notifications</li>
+                                            <li>Portfolio tracking</li>
+                                            <li>Historical backtesting</li>
+                                            <li>Mobile app (React Native)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>Q3-Q4 2026</h3>
+                                    <div className="card">
+                                        <h4>Advanced Features</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Polygon.io professional tier</li>
+                                            <li>Options data analysis</li>
+                                            <li>Real-time trading signals</li>
+                                            <li>Machine learning predictions</li>
+                                            <li>Social sentiment integration</li>
+                                            <li>Premium subscription tier</li>
+                                            <li>API for third-party access</li>
+                                            <li>White-label solutions</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="card" style={{ marginTop: '2rem', borderLeft: '4px solid var(--purple)' }}>
+                                <h4>Long-term Vision</h4>
+                                <p style={{ fontSize: '0.95rem', lineHeight: '1.8', color: 'var(--text)' }}>
+                                    Evolve from a stock analysis platform into a comprehensive investment intelligence ecosystem, 
+                                    offering institutional-grade research tools, automated portfolio management, and AI-powered 
+                                    investment recommendations accessible to retail investors worldwide.
+                                </p>
+                            </div>
+                        </CollapseSection>
+
+                        {/* Call to Action */}
+                        <div className="cta-section">
+                            <h2>Experience Next Investment</h2>
+                            <p>Professional-grade stock analysis powered by AI, available now at nextinvestment.ai</p>
+                            <a href="https://nextinvestment.ai" className="cta-button" target="_blank" rel="noopener noreferrer">
+                                Launch Platform →
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
