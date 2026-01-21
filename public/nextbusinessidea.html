@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextBusinessIdea - AI-Powered Local Business Opportunity Discovery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #0066FF;
+            --deep-blue: #0047AB;
+            --light-blue: #4D94FF;
+            --sky-blue: #E6F2FF;
+            --dark: #0A1628;
+            --text: #1E293B;
+            --text-light: #64748B;
+            --white: #FFFFFF;
+            --gray-light: #F8FAFC;
+            --gray-border: #E2E8F0;
+            --accent-purple: #8B5CF6;
+            --accent-green: #10B981;
+            --accent-orange: #F97316;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--white);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .logo {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 4rem 4rem;
+            position: relative;
+            background: linear-gradient(135deg, var(--sky-blue) 0%, var(--white) 50%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: radial-gradient(circle at top right, var(--light-blue) 0%, transparent 70%);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1100px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            color: var(--dark);
+        }
+
+        .hero h1 .accent {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+        }
+
+        .hero .description {
+            font-size: 1.25rem;
+            color: var(--text);
+            max-width: 900px;
+            margin: 0 auto 1rem;
+            line-height: 1.9;
+            font-weight: 500;
+        }
+
+        section {
+            padding: 5rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-align: center;
+            letter-spacing: -0.02em;
+            color: var(--dark);
+        }
+
+        h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        h4 {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--gray-border);
+            border-radius: 12px;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 40px rgba(0, 102, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .collapse-section {
+            margin-bottom: 2rem;
+            border: 1px solid var(--gray-border);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .collapse-header {
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, var(--sky-blue) 0%, var(--white) 100%);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .collapse-header:hover {
+            background: var(--sky-blue);
+        }
+
+        .collapse-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .collapse-icon {
+            font-size: 1.75rem;
+        }
+
+        .collapse-arrow {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .collapse-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .collapse-content {
+            padding: 2rem;
+            display: none;
+        }
+
+        .collapse-content.open {
+            display: block;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-blue {
+            background: var(--sky-blue);
+            color: var(--deep-blue);
+        }
+
+        .badge-green {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .badge-purple {
+            background: #EDE9FE;
+            color: #6D28D9;
+        }
+
+        .badge-orange {
+            background: #FED7AA;
+            color: #C2410C;
+        }
+
+        .badge-pink {
+            background: #FCE7F3;
+            color: #BE185D;
+        }
+
+        .badge-yellow {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        ul li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .tech-item {
+            padding: 0.5rem 1rem;
+            background: var(--gray-light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid var(--gray-border);
+        }
+
+        .pricing-card {
+            border: 2px solid var(--gray-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 102, 255, 0.15);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary-blue);
+            border-width: 3px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 102, 255, 0.2);
+        }
+
+        .pricing-card .price {
+            font-family: 'Sora', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin: 1rem 0;
+        }
+
+        .pricing-card .price-label {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-card ul {
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+
+        .flow-step {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .flow-step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary-blue);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .flow-step::after {
+            content: '';
+            position: absolute;
+            left: 0.95rem;
+            top: 2.5rem;
+            width: 2px;
+            height: calc(100% - 1rem);
+            background: var(--sky-blue);
+        }
+
+        .flow-step:last-child::after {
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            nav {
+                padding: 1.5rem 2rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            section {
+                padding: 4rem 2rem;
+            }
+
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 6rem 2rem 3rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p, .hero .description {
+                font-size: 1rem;
+            }
+
+            section {
+                padding: 3rem 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+                margin-bottom: 2rem;
+            }
+
+            .collapse-header {
+                padding: 1rem 1.5rem;
+            }
+
+            .collapse-title {
+                font-size: 1.25rem;
+            }
+
+            .collapse-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const CollapseSection = ({ title, icon, children }) => {
+            const [isOpen, setIsOpen] = useState(false);
+
+            return (
+                <div className="collapse-section">
+                    <div className="collapse-header" onClick={() => setIsOpen(!isOpen)}>
+                        <div className="collapse-title">
+                            <span className="collapse-icon">{icon}</span>
+                            <span>{title}</span>
+                        </div>
+                        <span className={`collapse-arrow ${isOpen ? 'open' : ''}`}>▼</span>
+                    </div>
+                    <div className={`collapse-content ${isOpen ? 'open' : ''}`}>
+                        {children}
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            return (
+                <div>
+                    {/* Navigation */}
+                    <nav>
+                        <div className="logo">NextBusinessIdea</div>
+                        <ul className="nav-links">
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="#overview">Overview</a></li>
+                            <li><a href="#architecture">Architecture</a></li>
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#pricing">Pricing</a></li>
+                            <li><a href="#roadmap">Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <section className="hero">
+                        <div className="hero-content">
+                            <h1>
+                                Discover <span className="accent">Local Business Opportunities</span> with AI
+                            </h1>
+                            <p className="description">
+                                NextBusinessIdea is a SaaS platform that helps entrepreneurs identify underserved markets 
+                                through data-driven market analysis, AI-powered insights, and comprehensive business intelligence.
+                            </p>
+                            
+                            
+                          <iframe width="640" height="344" src="https://www.loom.com/embed/bc035ddbe2564d4ba39c8b9610c249ce" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                            
+                            <p>
+                                Built with Next.js 14, FastAPI, and PostgreSQL • Deployed on Vercel, Railway & Supabase
+                            </p>
+                        </div>
+                    </section>
+
+                    {/* System Overview */}
+                    <section id="overview">
+                        <h2>🎯 System Overview</h2>
+                        
+                        <CollapseSection title="Product Vision" icon="💡">
+                            <div className="grid grid-2">
+                                <div>
+                                    <h3>What is NextBusinessIdea?</h3>
+                                    <div className="card">
+                                        <p style={{ marginBottom: '1rem' }}>
+                                            NextBusinessIdea empowers entrepreneurs to discover viable business opportunities 
+                                            in specific geographic locations by analyzing:
+                                        </p>
+                                        <ul>
+                                            <li>Market gaps and underserved niches</li>
+                                            <li>Demographic data and target markets</li>
+                                            <li>Competitive landscape and saturation</li>
+                                            <li>Financial projections and startup costs</li>
+                                            <li>Market trends and seasonality</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3>Key Differentiators</h3>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                        <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)' }}>
+                                            <h4>🎯 Location-First Approach</h4>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                                Search by city, ZIP code, or coordinates for hyper-local insights
+                                            </p>
+                                        </div>
+                                        <div className="card" style={{ borderLeft: '4px solid var(--accent-green)' }}>
+                                            <h4>🤖 AI-Powered Analysis</h4>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                                Machine learning algorithms score and rank opportunities
+                                            </p>
+                                        </div>
+                                        <div className="card" style={{ borderLeft: '4px solid var(--accent-purple)' }}>
+                                            <h4>📊 Multi-Source Data</h4>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                                Integrates Census, Google Places, Reddit, and more
+                                            </p>
+                                        </div>
+                                        <div className="card" style={{ borderLeft: '4px solid var(--accent-orange)' }}>
+                                            <h4>💰 Subscription Model</h4>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                                Freemium to Enterprise tiers with usage-based limits
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '2rem' }}>
+                                <h3>Success Metrics</h3>
+                                <div className="grid grid-4">
+                                    <div className="card" style={{ textAlign: 'center' }}>
+                                        <h4 style={{ color: 'var(--primary-blue)', fontSize: '2rem' }}>70%</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>User Engagement<br/>First search in 24h</p>
+                                    </div>
+                                    <div className="card" style={{ textAlign: 'center' }}>
+                                        <h4 style={{ color: 'var(--accent-green)', fontSize: '2rem' }}>15%</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>Conversion Rate<br/>Free to paid</p>
+                                    </div>
+                                    <div className="card" style={{ textAlign: 'center' }}>
+                                        <h4 style={{ color: 'var(--accent-purple)', fontSize: '2rem' }}>80%</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>Retention Rate<br/>Monthly active users</p>
+                                    </div>
+                                    <div className="card" style={{ textAlign: 'center' }}>
+                                        <h4 style={{ color: 'var(--accent-orange)', fontSize: '2rem' }}>25%</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>MoM Growth<br/>Revenue growth</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Tech Stack" icon="🛠️">
+                            <div className="grid grid-2">
+                                <div>
+                                    <h3>Frontend Architecture</h3>
+                                    <div className="card">
+                                        <h4>Core Technologies</h4>
+                                        <div className="tech-stack">
+                                            <span className="tech-item">Next.js 14</span>
+                                            <span className="tech-item">TypeScript</span>
+                                            <span className="tech-item">React</span>
+                                            <span className="tech-item">TailwindCSS</span>
+                                            <span className="tech-item">shadcn/ui</span>
+                                        </div>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Key Libraries</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>NextAuth.js - Authentication</li>
+                                            <li>Prisma - ORM & Type Safety</li>
+                                            <li>Stripe - Payment Processing</li>
+                                            <li>React Hook Form - Form Management</li>
+                                            <li>Recharts - Data Visualization</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3>Backend Architecture</h3>
+                                    <div className="card">
+                                        <h4>Core Technologies</h4>
+                                        <div className="tech-stack">
+                                            <span className="tech-item">FastAPI</span>
+                                            <span className="tech-item">Python 3.11+</span>
+                                            <span className="tech-item">PostgreSQL</span>
+                                            <span className="tech-item">SQLAlchemy</span>
+                                            <span className="tech-item">Pydantic v2</span>
+                                        </div>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Key Services</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Uvicorn - ASGI Server</li>
+                                            <li>Celery - Background Tasks</li>
+                                            <li>Redis - Caching & Sessions</li>
+                                            <li>OpenAI API - AI Analysis</li>
+                                            <li>Stripe SDK - Billing</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '2rem' }}>
+                                <h3>External Integrations</h3>
+                                <div className="grid grid-3">
+                                    <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)' }}>
+                                        <h4>🗺️ US Census Bureau API</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', marginBottom: '0.5rem' }}>
+                                            Demographics and economic data
+                                        </p>
+                                        <span className="badge badge-blue">FREE</span>
+                                    </div>
+                                    <div className="card" style={{ borderLeft: '4px solid #EF4444' }}>
+                                        <h4>📍 Google Places API</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', marginBottom: '0.5rem' }}>
+                                            Business listings and reviews
+                                        </p>
+                                        <span className="badge badge-orange">$200/mo credit</span>
+                                    </div>
+                                    <div className="card" style={{ borderLeft: '4px solid #FF4500' }}>
+                                        <h4>💬 Reddit API</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', marginBottom: '0.5rem' }}>
+                                            Community sentiment analysis
+                                        </p>
+                                        <span className="badge badge-orange">100 req/min</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+                    </section>
+
+                    {/* Architecture */}
+                    <section id="architecture">
+                        <h2>🏗️ System Architecture</h2>
+
+                        <CollapseSection title="High-Level Architecture" icon="🌐">
+                            <div className="card">
+                                <h3>Architecture Overview</h3>
+                                <p style={{ marginBottom: '1.5rem', color: 'var(--text-light)' }}>
+                                    NextBusinessIdea follows a modern three-tier architecture with clear separation 
+                                    of concerns, microservices patterns, and cloud-native deployment.
+                                </p>
+                                
+                                <div className="grid grid-3" style={{ marginTop: '2rem' }}>
+                                    <div>
+                                        <h4>🎨 Presentation Layer</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Next.js 14 (App Router)</li>
+                                            <li>Server Components</li>
+                                            <li>Client Components</li>
+                                            <li>API Routes</li>
+                                            <li>Deployed on Vercel</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>⚙️ Application Layer</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>FastAPI REST API</li>
+                                            <li>Business Logic</li>
+                                            <li>Data Processing</li>
+                                            <li>External API Integration</li>
+                                            <li>Deployed on Railway</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>💾 Data Layer</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>PostgreSQL 15+</li>
+                                            <li>Redis (Caching)</li>
+                                            <li>Object Storage</li>
+                                            <li>File Storage</li>
+                                            <li>Supabase Managed</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '2rem' }}>
+                                <h3>Data Flow</h3>
+                                <div className="card">
+                                    <div className="flow-step" data-step="1">
+                                        <h4>User Request</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                            User enters location in Next.js UI → Form validation → API call preparation
+                                        </p>
+                                    </div>
+                                    <div className="flow-step" data-step="2">
+                                        <h4>API Gateway</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                            Request routed to FastAPI backend → Authentication check → Rate limiting
+                                        </p>
+                                    </div>
+                                    <div className="flow-step" data-step="3">
+                                        <h4>Business Logic</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                            Geocoding → Multi-source data aggregation → AI analysis → Scoring algorithm
+                                        </p>
+                                    </div>
+                                    <div className="flow-step" data-step="4">
+                                        <h4>Data Persistence</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                            Save search results → Update user usage → Cache results → Analytics tracking
+                                        </p>
+                                    </div>
+                                    <div className="flow-step" data-step="5">
+                                        <h4>Response Delivery</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                            Format JSON response → Return to frontend → Render UI → Display results
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Database Schema" icon="🗄️">
+                            <h3>Core Tables</h3>
+                            <div className="grid grid-2">
+                                <div className="card">
+                                    <h4>👤 users</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                        User accounts and authentication
+                                    </p>
+                                    <ul style={{ fontSize: '0.85rem' }}>
+                                        <li>id (UUID, PK)</li>
+                                        <li>email (unique)</li>
+                                        <li>password_hash</li>
+                                        <li>subscription_tier</li>
+                                        <li>oauth_provider</li>
+                                        <li>created_at, updated_at</li>
+                                    </ul>
+                                </div>
+                                <div className="card">
+                                    <h4>💳 subscriptions</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                        User subscription management
+                                    </p>
+                                    <ul style={{ fontSize: '0.85rem' }}>
+                                        <li>id (UUID, PK)</li>
+                                        <li>user_id (FK → users)</li>
+                                        <li>stripe_subscription_id</li>
+                                        <li>tier (Free/Pro/Enterprise)</li>
+                                        <li>status (active/canceled/past_due)</li>
+                                        <li>current_period_end</li>
+                                    </ul>
+                                </div>
+                                <div className="card">
+                                    <h4>🔍 searches</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                        Search history and results
+                                    </p>
+                                    <ul style={{ fontSize: '0.85rem' }}>
+                                        <li>id (UUID, PK)</li>
+                                        <li>user_id (FK → users)</li>
+                                        <li>location (text)</li>
+                                        <li>coordinates (point)</li>
+                                        <li>results_count</li>
+                                        <li>created_at</li>
+                                    </ul>
+                                </div>
+                                <div className="card">
+                                    <h4>💡 business_ideas</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                        Generated business opportunities
+                                    </p>
+                                    <ul style={{ fontSize: '0.85rem' }}>
+                                        <li>id (UUID, PK)</li>
+                                        <li>search_id (FK → searches)</li>
+                                        <li>title, description</li>
+                                        <li>market_gap_score</li>
+                                        <li>category, subcategory</li>
+                                        <li>analysis (JSONB)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '2rem' }}>
+                                <h3>Relationships</h3>
+                                <div className="card">
+                                    <ul style={{ fontSize: '0.9rem' }}>
+                                        <li><strong>users</strong> → <strong>subscriptions</strong> (1:1) - Each user has one active subscription</li>
+                                        <li><strong>users</strong> → <strong>searches</strong> (1:N) - Users can perform multiple searches</li>
+                                        <li><strong>searches</strong> → <strong>business_ideas</strong> (1:N) - Each search generates 5-10 ideas</li>
+                                        <li><strong>users</strong> → <strong>usage_tracking</strong> (1:N) - Track monthly usage per user</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Security Architecture" icon="🔒">
+                            <div className="grid grid-2">
+                                <div>
+                                    <h3>Authentication & Authorization</h3>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                        <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)' }}>
+                                            <h4>🔑 NextAuth.js</h4>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                                Email/password + Google OAuth • JWT sessions • Secure cookies
+                                            </p>
+                                        </div>
+                                        <div className="card" style={{ borderLeft: '4px solid var(--accent-green)' }}>
+                                            <h4>🛡️ Password Security</h4>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                                bcrypt hashing • 8+ chars with complexity • Reset via email
+                                            </p>
+                                        </div>
+                                        <div className="card" style={{ borderLeft: '4px solid var(--accent-purple)' }}>
+                                            <h4>🎫 API Authentication</h4>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                                Bearer tokens • JWT verification • Role-based access control
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3>Data Protection</h3>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                        <div className="card" style={{ borderLeft: '4px solid var(--accent-orange)' }}>
+                                            <h4>🔐 Encryption</h4>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                                HTTPS/TLS • Encrypted at rest • Environment variables
+                                            </p>
+                                        </div>
+                                        <div className="card" style={{ borderLeft: '4px solid var(--accent-green)' }}>
+                                            <h4>🚫 Input Validation</h4>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                                Pydantic models • SQL injection prevention • XSS protection
+                                            </p>
+                                        </div>
+                                        <div className="card" style={{ borderLeft: '4px solid var(--accent-purple)' }}>
+                                            <h4>⚡ Rate Limiting</h4>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                                Per-user limits • DDoS protection • Usage quotas
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '2rem' }}>
+                                <h3>Compliance & Privacy</h3>
+                                <div className="grid grid-3">
+                                    <div className="card">
+                                        <h4>GDPR Compliance</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>Data export capability</li>
+                                            <li>Right to deletion</li>
+                                            <li>Consent management</li>
+                                            <li>Privacy policy</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card">
+                                        <h4>PCI Compliance</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>Stripe tokenization</li>
+                                            <li>No card data storage</li>
+                                            <li>Secure payment flow</li>
+                                            <li>Audit logging</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card">
+                                        <h4>Data Retention</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>2 years of searches</li>
+                                            <li>Daily backups</li>
+                                            <li>30-day retention</li>
+                                            <li>PITR capability</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+                    </section>
+
+                    {/* Features */}
+                    <section id="features">
+                        <h2>✨ Core Features</h2>
+
+                        <CollapseSection title="Search & Discovery" icon="🔍">
+                            <div className="grid grid-2">
+                                <div>
+                                    <h3>Location-Based Search</h3>
+                                    <div className="card">
+                                        <h4>Input Options</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>City name (e.g., "Austin, TX")</li>
+                                            <li>ZIP code (e.g., "78701")</li>
+                                            <li>Geographic coordinates</li>
+                                            <li>Address autocomplete</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Processing</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Geocoding validation</li>
+                                            <li>Demographic lookup</li>
+                                            <li>Market boundary detection</li>
+                                            <li>Response in &lt;10 seconds</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3>Business Opportunity Scoring</h3>
+                                    <div className="card">
+                                        <h4>Scoring Algorithm (0-100)</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                            Multi-factor analysis combining:
+                                        </p>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li><strong>Demand Score (40%)</strong> - Population density, search trends</li>
+                                            <li><strong>Competition Score (30%)</strong> - Market saturation, gaps</li>
+                                            <li><strong>Demographics (20%)</strong> - Target market match</li>
+                                            <li><strong>Trends (10%)</strong> - Growth trajectory, seasonality</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '2rem' }}>
+                                <h3>Analysis Output</h3>
+                                <div className="grid grid-3">
+                                    <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)' }}>
+                                        <h4>📊 Market Intelligence</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>5-10 ranked opportunities</li>
+                                            <li>Market gap score breakdown</li>
+                                            <li>AI-generated rationale</li>
+                                            <li>Category classification</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--accent-green)' }}>
+                                        <h4>🏪 Competitor Analysis</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>Existing businesses count</li>
+                                            <li>Average ratings & reviews</li>
+                                            <li>Market saturation level</li>
+                                            <li>Geographic distribution</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ borderLeft: '4px solid var(--accent-purple)' }}>
+                                        <h4>💰 Financial Projections</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>Estimated startup costs</li>
+                                            <li>Pricing recommendations</li>
+                                            <li>ROI estimates</li>
+                                            <li>Break-even timeline</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="User Management" icon="👤">
+                            <div className="grid grid-2">
+                                <div>
+                                    <h3>Authentication</h3>
+                                    <div className="card">
+                                        <h4>Registration Options</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Email/Password signup</li>
+                                            <li>Google OAuth integration</li>
+                                            <li>Email verification required</li>
+                                            <li>Password reset via email</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Session Management</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Secure JWT tokens</li>
+                                            <li>30-day session duration</li>
+                                            <li>Remember me option</li>
+                                            <li>Multi-device support</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3>User Profile</h3>
+                                    <div className="card">
+                                        <h4>Profile Features</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Edit personal information</li>
+                                            <li>Search history view</li>
+                                            <li>Saved business ideas</li>
+                                            <li>Notification preferences</li>
+                                            <li>Account deletion</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Privacy Controls</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Data export (GDPR)</li>
+                                            <li>Delete account & data</li>
+                                            <li>Email preferences</li>
+                                            <li>Cookie consent</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Analytics & Insights" icon="📈">
+                            <div className="grid grid-2">
+                                <div>
+                                    <h3>User Analytics Dashboard</h3>
+                                    <div className="card">
+                                        <h4>Usage Tracking</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Searches this month</li>
+                                            <li>Remaining searches</li>
+                                            <li>Search history timeline</li>
+                                            <li>Most searched locations</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Insights</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Top-scored ideas viewed</li>
+                                            <li>Categories explored</li>
+                                            <li>Engagement metrics</li>
+                                            <li>Personalized recommendations</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3>Admin Analytics</h3>
+                                    <div className="card">
+                                        <h4>Platform Metrics</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Total users & active users</li>
+                                            <li>Search volume trends</li>
+                                            <li>Conversion funnel</li>
+                                            <li>Revenue metrics (MRR, ARR)</li>
+                                        </ul>
+                                    </div>
+                                    <div className="card" style={{ marginTop: '1rem' }}>
+                                        <h4>Performance Monitoring</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>API response times</li>
+                                            <li>Error rates & types</li>
+                                            <li>Database performance</li>
+                                            <li>Uptime & availability</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+                    </section>
+
+                    {/* Pricing */}
+                    <section id="pricing">
+                        <h2>💳 Subscription Tiers</h2>
+                        
+                        <div className="grid grid-3">
+                            <div className="pricing-card">
+                                <h3>Free</h3>
+                                <div className="price">$0</div>
+                                <div className="price-label">Perfect for exploring</div>
+                                <ul>
+                                    <li>10 searches per month</li>
+                                    <li>Basic market analysis</li>
+                                    <li>5-10 business ideas per search</li>
+                                    <li>Search history (30 days)</li>
+                                    <li>Email support</li>
+                                </ul>
+                            </div>
+                            
+                            <div className="pricing-card featured">
+                                <span className="badge badge-blue" style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)' }}>
+                                    MOST POPULAR
+                                </span>
+                                <h3>Pro</h3>
+                                <div className="price">$29</div>
+                                <div className="price-label">per month</div>
+                                <ul>
+                                    <li>100 searches per month</li>
+                                    <li>Advanced market analysis</li>
+                                    <li>Detailed competitor data</li>
+                                    <li>Financial projections</li>
+                                    <li>Unlimited search history</li>
+                                    <li>Priority email support</li>
+                                    <li>Export reports (PDF/CSV)</li>
+                                </ul>
+                            </div>
+                            
+                            <div className="pricing-card">
+                                <h3>Enterprise</h3>
+                                <div className="price">$99</div>
+                                <div className="price-label">per month</div>
+                                <ul>
+                                    <li>Unlimited searches</li>
+                                    <li>White-label reports</li>
+                                    <li>Team collaboration (5 users)</li>
+                                    <li>API access</li>
+                                    <li>Custom integrations</li>
+                                    <li>Dedicated account manager</li>
+                                    <li>SLA guarantee (99.9%)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div style={{ marginTop: '3rem' }}>
+                            <h3 style={{ textAlign: 'center', marginBottom: '2rem' }}>Payment Processing</h3>
+                            <div className="grid grid-2">
+                                <div className="card">
+                                    <h4>Stripe Integration</h4>
+                                    <ul style={{ fontSize: '0.9rem' }}>
+                                        <li>PCI-compliant payment processing</li>
+                                        <li>Major credit/debit cards accepted</li>
+                                        <li>Automated recurring billing</li>
+                                        <li>Secure tokenization (no card storage)</li>
+                                        <li>Invoice generation & receipts</li>
+                                    </ul>
+                                </div>
+                                <div className="card">
+                                    <h4>Subscription Management</h4>
+                                    <ul style={{ fontSize: '0.9rem' }}>
+                                        <li>Instant upgrade/downgrade</li>
+                                        <li>Prorated billing adjustments</li>
+                                        <li>Cancel anytime (no penalties)</li>
+                                        <li>Automatic renewal reminders</li>
+                                        <li>Usage limit notifications</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Roadmap */}
+                    <section id="roadmap">
+                        <h2>🚀 Product Roadmap</h2>
+
+                        <CollapseSection title="MVP (Current) - Core Features" icon="✅">
+                            <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)' }}>
+                                <h3>Completed Features</h3>
+                                <div className="grid grid-2" style={{ marginTop: '1.5rem' }}>
+                                    <div>
+                                        <h4>✅ Search & Discovery</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Location-based search (city, ZIP, coordinates)</li>
+                                            <li>Business opportunity scoring (0-100)</li>
+                                            <li>5-10 ranked ideas per search</li>
+                                            <li>Market gap analysis (with mock data)</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>✅ User Management</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Email/password authentication</li>
+                                            <li>Google OAuth integration</li>
+                                            <li>User profiles & preferences</li>
+                                            <li>Search history tracking</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>✅ Billing & Subscriptions</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Three pricing tiers (Free/Pro/Enterprise)</li>
+                                            <li>Stripe payment integration</li>
+                                            <li>Usage tracking & limits</li>
+                                            <li>Subscription management</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>✅ Technical Infrastructure</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Next.js 14 frontend (Vercel)</li>
+                                            <li>FastAPI backend (Railway)</li>
+                                            <li>PostgreSQL database (Supabase)</li>
+                                            <li>Responsive UI (mobile-first)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="v1.1 - Real Data Integration (Q1 2024)" icon="📊">
+                            <div className="card" style={{ borderLeft: '4px solid var(--accent-green)' }}>
+                                <h3>Timeline: 2-3 months</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                                    Replace mock data with live market intelligence from multiple data sources
+                                </p>
+                                
+                                <div className="grid grid-2">
+                                    <div>
+                                        <h4>🔌 Live API Integrations</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>US Census Bureau (demographics)</li>
+                                            <li>Google Places (competitors)</li>
+                                            <li>Reddit API (sentiment)</li>
+                                            <li>Google Trends (search data)</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>📈 Enhanced Analysis</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Historical trend charts</li>
+                                            <li>Seasonal pattern detection</li>
+                                            <li>Market saturation heatmaps</li>
+                                            <li>Competitive positioning matrix</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>📧 Email Notifications</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Weekly opportunity alerts</li>
+                                            <li>Custom threshold settings</li>
+                                            <li>Location-based alerts</li>
+                                            <li>Digest emails</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>⚡ Performance</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Redis caching layer</li>
+                                            <li>Celery background workers</li>
+                                            <li>Database query optimization</li>
+                                            <li>&lt;2s average response time</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--gray-light)', borderRadius: '8px' }}>
+                                    <strong>Target Metrics:</strong> 1,000 active users • 15% conversion • 80% retention
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="v2.0 - Advanced Features (Q2 2024)" icon="🚀">
+                            <div className="card" style={{ borderLeft: '4px solid var(--accent-purple)' }}>
+                                <h3>Timeline: 3-4 months</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                                    Power user features and team collaboration
+                                </p>
+                                
+                                <div className="grid grid-3">
+                                    <div>
+                                        <h4>👥 Team Collaboration</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>Multi-user accounts</li>
+                                            <li>Shared workspaces</li>
+                                            <li>Comment system</li>
+                                            <li>Team usage pooling</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>📄 Custom Reports</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>Downloadable PDFs</li>
+                                            <li>White-label options</li>
+                                            <li>Data visualization suite</li>
+                                            <li>Presentation mode</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>🔍 Advanced Search</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>Multi-location compare</li>
+                                            <li>Demographic targeting</li>
+                                            <li>Industry filters</li>
+                                            <li>AI recommendations</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>💼 Idea Management</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>Save favorites</li>
+                                            <li>Track idea status</li>
+                                            <li>Personal notes</li>
+                                            <li>Progress tracking</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>📱 Mobile App</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>React Native (iOS/Android)</li>
+                                            <li>Offline history</li>
+                                            <li>Push notifications</li>
+                                            <li>Location suggestions</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>⚙️ Technical</h4>
+                                        <ul style={{ fontSize: '0.85rem' }}>
+                                            <li>GraphQL API</li>
+                                            <li>WebSocket updates</li>
+                                            <li>Advanced caching</li>
+                                            <li>Multi-region deploy</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--gray-light)', borderRadius: '8px' }}>
+                                    <strong>Target Metrics:</strong> 5,000 active users • 20% conversion • 85% retention • NPS &gt;50
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="v3.0 - Enterprise & Scale (Q3-Q4 2024)" icon="🏢">
+                            <div className="card" style={{ borderLeft: '4px solid var(--accent-orange)' }}>
+                                <h3>Timeline: 4-6 months</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                                    Enterprise customers and global expansion
+                                </p>
+                                
+                                <div className="grid grid-2">
+                                    <div>
+                                        <h4>🏆 Enterprise Features</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>White-label solutions for consultants</li>
+                                            <li>Custom branding and domains</li>
+                                            <li>Dedicated account managers</li>
+                                            <li>99.99% SLA guarantees</li>
+                                            <li>Custom API integrations</li>
+                                            <li>Advanced security & compliance</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>🌍 International Expansion</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>EU market data integration</li>
+                                            <li>UK business intelligence</li>
+                                            <li>Canada market analysis</li>
+                                            <li>Multi-currency support</li>
+                                            <li>Multi-language interface</li>
+                                            <li>Regional compliance (GDPR, etc.)</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>🔌 Public API Platform</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>RESTful & GraphQL endpoints</li>
+                                            <li>Webhook support</li>
+                                            <li>Interactive documentation</li>
+                                            <li>Rate limiting by tier</li>
+                                            <li>SDK libraries (Python, JS, Go)</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>☁️ Infrastructure Scale</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Kubernetes orchestration</li>
+                                            <li>Multi-region databases</li>
+                                            <li>Edge computing for APIs</li>
+                                            <li>Advanced monitoring (Datadog)</li>
+                                            <li>Automated scaling policies</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--gray-light)', borderRadius: '8px' }}>
+                                    <strong>Target Metrics:</strong> 25,000 active users • 50 enterprise customers • $100K MRR • 90% retention • 99.99% uptime
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <div style={{ marginTop: '3rem' }}>
+                            <h3 style={{ textAlign: 'center', marginBottom: '2rem' }}>Future Possibilities (Beyond v3.0)</h3>
+                            <div className="grid grid-4">
+                                <div className="card" style={{ textAlign: 'center' }}>
+                                    <h4 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🤖</h4>
+                                    <h4>AI Business Advisor</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                                        Chatbot for personalized guidance
+                                    </p>
+                                </div>
+                                <div className="card" style={{ textAlign: 'center' }}>
+                                    <h4 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>💰</h4>
+                                    <h4>Funding Platform</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                                        Connect with investors
+                                    </p>
+                                </div>
+                                <div className="card" style={{ textAlign: 'center' }}>
+                                    <h4 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🏪</h4>
+                                    <h4>Idea Marketplace</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                                        Buy/sell validated ideas
+                                    </p>
+                                </div>
+                                <div className="card" style={{ textAlign: 'center' }}>
+                                    <h4 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎓</h4>
+                                    <h4>Education Hub</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                                        Courses and resources
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <section style={{ background: 'var(--gray-light)', padding: '3rem 4rem', marginTop: '4rem' }}>
+                        <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
+                            <div className="logo" style={{ fontSize: '2rem', marginBottom: '1rem' }}>NextBusinessIdea</div>
+                            <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                                Empowering entrepreneurs with data-driven business intelligence
+                            </p>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                <span>Built with Next.js & FastAPI</span>
+                                <span>•</span>
+                                <span>MVP v1.0</span>
+                                <span>•</span>
+                                <span>2024</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

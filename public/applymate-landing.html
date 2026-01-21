@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApplyMate - AI-Powered Job Application Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #0066FF;
+            --deep-blue: #0047AB;
+            --light-blue: #4D94FF;
+            --sky-blue: #E6F2FF;
+            --dark: #0A1628;
+            --text: #1E293B;
+            --text-light: #64748B;
+            --white: #FFFFFF;
+            --gray-light: #F8FAFC;
+            --gray-border: #E2E8F0;
+            --accent-purple: #8B5CF6;
+            --accent-green: #10B981;
+            --accent-orange: #F97316;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--white);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .logo {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 4rem 4rem;
+            position: relative;
+            background: linear-gradient(135deg, var(--sky-blue) 0%, var(--white) 50%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: radial-gradient(circle at top right, var(--light-blue) 0%, transparent 70%);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1100px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            color: var(--dark);
+        }
+
+        .hero h1 .accent {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+        }
+
+        .hero .description {
+            font-size: 1.25rem;
+            color: var(--text);
+            max-width: 900px;
+            margin: 0 auto 1rem;
+            line-height: 1.9;
+            font-weight: 500;
+        }
+
+        section {
+            padding: 5rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            letter-spacing: -0.02em;
+            color: var(--dark);
+        }
+
+        h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+            color: var(--dark);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: -2rem auto 3rem;
+            line-height: 1.7;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--gray-border);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 32px rgba(0, 102, 255, 0.12);
+            transform: translateY(-4px);
+            border-color: var(--light-blue);
+        }
+
+        .grid {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 0.75rem 0;
+            padding-left: 1.75rem;
+            position: relative;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0, 102, 255, 0.25);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0, 102, 255, 0.35);
+        }
+
+        .cta-button.secondary {
+            background: var(--white);
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            box-shadow: none;
+        }
+
+        .cta-button.secondary:hover {
+            background: var(--sky-blue);
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stat-box .number {
+            font-family: 'Sora', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-box .label {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--sky-blue);
+            color: var(--primary-blue);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            background: var(--gray-light);
+            color: var(--text);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gray-border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            border: 2px solid var(--white);
+            box-shadow: 0 0 0 3px var(--sky-blue);
+        }
+
+        .collapse-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .collapse-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: var(--gray-light);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .collapse-header:hover {
+            background: var(--sky-blue);
+            border-color: var(--light-blue);
+        }
+
+        .collapse-header h3 {
+            margin: 0;
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .collapse-content {
+            padding: 2rem;
+            display: none;
+        }
+
+        .collapse-content.active {
+            display: block;
+        }
+
+        .arrow {
+            transition: transform 0.3s ease;
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .arrow.active {
+            transform: rotate(180deg);
+        }
+
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: var(--gray-light);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .process-number {
+            flex-shrink: 0;
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .tech-item {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--gray-border);
+            border-radius: 10px;
+            font-weight: 600;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .hero {
+                padding: 6rem 1.5rem 3rem;
+            }
+
+            section {
+                padding: 3rem 1.5rem;
+            }
+
+            .grid, .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        const CollapseSection = ({ title, icon, children }) => {
+            const [isOpen, setIsOpen] = useState(false);
+
+            return (
+                <div className="collapse-section">
+                    <div className="collapse-header" onClick={() => setIsOpen(!isOpen)}>
+                        <h3>
+                            <span>{icon}</span>
+                            <span>{title}</span>
+                        </h3>
+                        <span className={`arrow ${isOpen ? 'active' : ''}`}>▼</span>
+                    </div>
+                    <div className={`collapse-content ${isOpen ? 'active' : ''}`}>
+                        {children}
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            return (
+                <div>
+                    {/* Navigation */}
+                    <nav>
+                        <div className="logo">ApplyMate</div>
+                        <ul className="nav-links">
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="#problem">Problem</a></li>
+                            <li><a href="#solution">Solution</a></li>
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#how-it-works">How It Works</a></li>
+                            <li><a href="#tech">Technology</a></li>
+                            <li><a href="#roadmap">Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <section className="hero">
+                        <div className="hero-content">
+                            <h1>
+                                Transform Your Job Applications with <span className="accent">AI-Powered Precision</span>
+                            </h1>
+                            <p className="description">
+                                Stop spending hours customizing resumes and writing cover letters. ApplyMate automates the entire process while maintaining your authentic voice and ensuring zero fabrication.
+                            </p>
+                            <p>
+                                Generate tailored cover letters and optimized resumes in seconds. Review AI suggestions, approve changes, and submit professional documents—all without leaving your workflow.
+                            </p>
+                            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
+                                <button className="cta-button">Get Started</button>
+                                <button className="cta-button secondary">View Demo</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Problem Section */}
+                    <section id="problem" style={{ background: 'var(--gray-light)' }}>
+                        <h2>The Job Application Challenge</h2>
+                        <p className="subtitle">
+                            Job seekers face overwhelming hurdles that drain time and energy from their search
+                        </p>
+                        <div className="grid-2">
+                            <div className="card">
+                                <span className="icon">⏰</span>
+                                <h3>Time-Consuming Process</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    Manually tailoring resumes for each job posting takes 30-60 minutes per application. For 20 applications, that's 10-20 hours of repetitive work.
+                                </p>
+                                <ul className="feature-list">
+                                    <li>Copy-pasting and reformatting experience</li>
+                                    <li>Keyword matching against job descriptions</li>
+                                    <li>Rewriting achievements for relevance</li>
+                                    <li>Maintaining consistency across versions</li>
+                                </ul>
+                            </div>
+                            <div className="card">
+                                <span className="icon">✍️</span>
+                                <h3>Cover Letter Writer's Block</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    Writing unique, compelling cover letters requires creativity and energy that depletes with each application.
+                                </p>
+                                <ul className="feature-list">
+                                    <li>Finding the right tone for each company</li>
+                                    <li>Highlighting relevant experience naturally</li>
+                                    <li>Avoiding generic templates and clichés</li>
+                                    <li>Maintaining enthusiasm across 20+ letters</li>
+                                </ul>
+                            </div>
+                            <div className="card">
+                                <span className="icon">🎯</span>
+                                <h3>Accuracy and Consistency</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    Managing multiple resume versions creates risk of errors and inconsistencies that hurt your credibility.
+                                </p>
+                                <ul className="feature-list">
+                                    <li>Accidental date discrepancies</li>
+                                    <li>Missing key qualifications</li>
+                                    <li>Copy-paste errors between versions</li>
+                                    <li>Outdated information slipping through</li>
+                                </ul>
+                            </div>
+                            <div className="card">
+                                <span className="icon">📂</span>
+                                <h3>Organization Chaos</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    Tracking which resume and cover letter you sent to which company becomes a nightmare.
+                                </p>
+                                <ul className="feature-list">
+                                    <li>Dozens of resume files with cryptic names</li>
+                                    <li>Lost track of which version was sent where</li>
+                                    <li>Difficulty finding documents for follow-ups</li>
+                                    <li>No clear audit trail of applications</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div style={{ marginTop: '3rem', textAlign: 'center' }}>
+                            <div className="card" style={{ maxWidth: '800px', margin: '0 auto', background: 'var(--white)' }}>
+                                <h3 style={{ color: 'var(--primary-blue)', marginBottom: '1rem' }}>The Reality</h3>
+                                <div className="grid-4" style={{ marginTop: '2rem' }}>
+                                    <div className="stat-box">
+                                        <span className="number">50+</span>
+                                        <span className="label">Hours Lost</span>
+                                    </div>
+                                    <div className="stat-box">
+                                        <span className="number">20+</span>
+                                        <span className="label">Applications</span>
+                                    </div>
+                                    <div className="stat-box">
+                                        <span className="number">40+</span>
+                                        <span className="label">Document Versions</span>
+                                    </div>
+                                    <div className="stat-box">
+                                        <span className="number">100%</span>
+                                        <span className="label">Burnout Risk</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Solution Section */}
+                    <section id="solution">
+                        <h2>The ApplyMate Solution</h2>
+                        <p className="subtitle">
+                            Automate the tedious work while maintaining authenticity and control over your applications
+                        </p>
+                        
+                        <div className="card" style={{ background: 'linear-gradient(135deg, var(--sky-blue) 0%, var(--white) 100%)', marginBottom: '3rem', textAlign: 'center', padding: '3rem' }}>
+                            <h3 style={{ fontSize: '2rem', marginBottom: '1rem' }}>5 Minutes Per Application</h3>
+                            <p style={{ fontSize: '1.25rem', color: 'var(--text-light)', maxWidth: '700px', margin: '0 auto' }}>
+                                What used to take an hour now takes minutes. ApplyMate generates tailored materials in seconds, you review and approve in minutes, then submit with confidence.
+                            </p>
+                        </div>
+
+                        <div className="grid-2">
+                            <div className="card">
+                                <span className="icon">🤖</span>
+                                <h3>AI-Powered Generation</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    GPT-4o-mini analyzes your resume and each job posting to generate perfectly tailored cover letters and propose intelligent resume edits.
+                                </p>
+                                <ul className="feature-list">
+                                    <li>Contextual understanding of job requirements</li>
+                                    <li>Highlights your most relevant experience</li>
+                                    <li>Professional tone and structure</li>
+                                    <li>Generates in 15-30 seconds</li>
+                                </ul>
+                            </div>
+                            <div className="card">
+                                <span className="icon">🛡️</span>
+                                <h3>Zero Fabrication Policy</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    ApplyMate never invents skills, dates, employers, or achievements. All suggestions are based on your actual experience with transparent sourcing.
+                                </p>
+                                <ul className="feature-list">
+                                    <li>Only rephrases existing content</li>
+                                    <li>Shows source references for every edit</li>
+                                    <li>No invented qualifications</li>
+                                    <li>Maintains factual accuracy</li>
+                                </ul>
+                            </div>
+                            <div className="card">
+                                <span className="icon">✅</span>
+                                <h3>Edit Approval Workflow</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    You're in complete control. Review each suggested edit with before/after comparison, understand the rationale, then approve or reject.
+                                </p>
+                                <ul className="feature-list">
+                                    <li>Clear before/after visualization</li>
+                                    <li>Rationale for every suggestion</li>
+                                    <li>Simple checkbox approval</li>
+                                    <li>Only approved edits are applied</li>
+                                </ul>
+                            </div>
+                            <div className="card">
+                                <span className="icon">📄</span>
+                                <h3>Professional Documents</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    Get production-ready DOCX files that you can open in Word, edit further if needed, and submit immediately.
+                                </p>
+                                <ul className="feature-list">
+                                    <li>Microsoft Word format (.docx)</li>
+                                    <li>Professional formatting preserved</li>
+                                    <li>Organized by job in dedicated folders</li>
+                                    <li>Complete audit trail with diff files</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Architecture Section */}
+                    <section id="architecture">
+                        <h2>System Architecture</h2>
+                        <p className="subtitle">
+                            Modern, component-based architecture with clear separation of concerns
+                        </p>
+
+                        <CollapseSection title="Architecture Overview" icon="🏗️">
+                            <div className="card">
+                                <h3>System Diagram</h3>
+                                <pre style={{ background: 'var(--gray-light)', padding: '1.5rem', borderRadius: '8px', overflow: 'auto', fontSize: '0.85rem', lineHeight: '1.4' }}>
+{`┌─────────────────────────────────────────────┐
+│           User Browser                      │
+│  ┌──────────────────────────────────────┐  │
+│  │   React Components (UI Layer)        │  │
+│  │   - Dashboard                        │  │
+│  │   - Job Detail Page                  │  │
+│  │   - Edit Review Interface            │  │
+│  └──────────────────────────────────────┘  │
+│              │ HTTP/JSON                    │
+└──────────────┼──────────────────────────────┘
+               │
+┌──────────────▼──────────────────────────────┐
+│           Next.js Server                    │
+│  ┌──────────────────────────────────────┐  │
+│  │      API Routes (Backend)            │  │
+│  │  - GET  /api/jobs                    │  │
+│  │  - GET  /api/jobs/[folder]           │  │
+│  │  - POST /api/jobs/[folder]           │  │
+│  │  - POST /api/jobs/[folder]/apply     │  │
+│  │  - GET  /api/resume                  │  │
+│  │  - GET  /api/health                  │  │
+│  └──────────────────────────────────────┘  │
+│              │                               │
+│  ┌──────────▼──────────────────────────┐   │
+│  │    Library Layer (Business Logic)   │   │
+│  │  - job-discovery.ts                 │   │
+│  │  - resume-parser.ts                 │   │
+│  │  - ai-service.ts                    │   │
+│  │  - docx-generator.ts                │   │
+│  │  - types.ts                         │   │
+│  └─────────────────────────────────────┘   │
+└──────────────┼──────────────────────────────┘
+               │
+    ┌──────────┼──────────┐
+    │          │          │
+    ▼          ▼          ▼
+┌─────────┐ ┌─────────┐ ┌─────────┐
+│File     │ │OpenAI   │ │Libraries│
+│System   │ │API      │ │pdf-parse│
+│/resume  │ │GPT-4o   │ │docx     │
+│/jobs    │ │mini     │ │         │
+└─────────┘ └─────────┘ └─────────┘`}
+                                </pre>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Component Structure" icon="🧩">
+                            <div className="grid-2">
+                                <div className="card">
+                                    <h3>Frontend Components</h3>
+                                    <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem' }}>
+{`app/
+├── layout.tsx
+├── page.tsx (Dashboard)
+├── globals.css
+└── job/
+    └── [folderName]/
+        └── page.tsx (Detail)`}
+                                    </pre>
+                                </div>
+                                <div className="card">
+                                    <h3>API Layer</h3>
+                                    <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem' }}>
+{`app/api/
+├── health/route.ts
+├── resume/route.ts
+└── jobs/
+    ├── route.ts
+    └── [folderName]/
+        ├── route.ts
+        └── apply-edits/
+            └── route.ts`}
+                                    </pre>
+                                </div>
+                                <div className="card">
+                                    <h3>Business Logic</h3>
+                                    <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem' }}>
+{`lib/
+├── types.ts
+├── job-discovery.ts
+├── resume-parser.ts
+├── ai-service.ts
+├── docx-generator.ts
+└── utils.ts`}
+                                    </pre>
+                                </div>
+                                <div className="card">
+                                    <h3>File System</h3>
+                                    <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem' }}>
+{`jobsearch/
+├── resume/
+│   └── resume.pdf
+├── jobs/
+│   └── Company - Position/
+│       ├── job.txt
+│       ├── cover-letter.docx
+│       └── resume-updated.docx
+└── applymate/`}
+                                    </pre>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Key Design Decisions" icon="💡">
+                            <div className="grid-2">
+                                <div className="card">
+                                    <h4>📁 File-Based Storage</h4>
+                                    <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                        No database setup required. Everything stored in organized folders.
+                                    </p>
+                                    <ul className="feature-list">
+                                        <li>Simple setup - no migrations</li>
+                                        <li>Portable - copy entire folder</li>
+                                        <li>Transparent - direct file access</li>
+                                        <li>Version control friendly</li>
+                                    </ul>
+                                </div>
+                                <div className="card">
+                                    <h4>⚛️ Next.js App Router</h4>
+                                    <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                        Modern React patterns with server components and streaming.
+                                    </p>
+                                    <ul className="feature-list">
+                                        <li>Better TypeScript support</li>
+                                        <li>Simplified data fetching</li>
+                                        <li>Built-in API routes</li>
+                                        <li>Future-proof architecture</li>
+                                    </ul>
+                                </div>
+                                <div className="card">
+                                    <h4>🤖 GPT-4o-mini Model</h4>
+                                    <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                        Cost-effective AI for high-quality generation.
+                                    </p>
+                                    <ul className="feature-list">
+                                        <li>Fast response (15-30 seconds)</li>
+                                        <li>High-quality outputs</li>
+                                        <li>JSON mode support</li>
+                                        <li>Affordable for personal use</li>
+                                    </ul>
+                                </div>
+                                <div className="card">
+                                    <h4>✅ Edit Approval Workflow</h4>
+                                    <p style={{ fontSize: '0.9rem', color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                        Human-in-the-loop design for trust and control.
+                                    </p>
+                                    <ul className="feature-list">
+                                        <li>User maintains full control</li>
+                                        <li>Prevents inappropriate edits</li>
+                                        <li>Transparent AI suggestions</li>
+                                        <li>Builds trust through clarity</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </CollapseSection>
+                    </section>
+
+                    {/* Data Model Section */}
+                    <section id="data-model" style={{ background: 'var(--gray-light)' }}>
+                        <h2>Data Model</h2>
+                        <p className="subtitle">
+                            Strongly-typed data structures with clear relationships
+                        </p>
+
+                        <CollapseSection title="Entity Relationship Diagram" icon="🔗">
+                            <div className="card">
+                                <pre style={{ background: 'var(--white)', padding: '1.5rem', borderRadius: '8px', overflow: 'auto', fontSize: '0.8rem', lineHeight: '1.4' }}>
+{`┌─────────────────┐
+│  MasterResume   │
+│  (resume.pdf)   │
+└────────┬────────┘
+         │ parsed into
+         ▼
+┌─────────────────┐         ┌──────────────┐
+│   ResumeJSON    │◄────────┤ ContactInfo  │
+│                 │         └──────────────┘
+│                 │         ┌──────────────┐
+│                 │◄────────┤ Experience[] │
+│                 │         └──────────────┘
+│                 │         ┌──────────────┐
+│                 │◄────────┤ Education[]  │
+│                 │         └──────────────┘
+└────────┬────────┘
+         │ generates
+         ▼
+┌─────────────────┐         ┌──────────────┐
+│   JobPosting    │◄────────┤  JobConfig   │
+│  (job.txt/md)   │         │  (optional)  │
+└────────┬────────┘         └──────────────┘
+         │ creates
+         ▼
+┌─────────────────────────────┐
+│       JobOutput             │
+│  ┌──────────────────────┐  │
+│  │ cover_letter         │  │
+│  │ resume_edits[]       │  │
+│  │ resume_diff          │  │
+│  │ updated_resume       │  │
+│  └──────────────────────┘  │
+└─────────────────────────────┘`}
+                                </pre>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Core Data Types" icon="📊">
+                            <div className="grid-2">
+                                <div className="card">
+                                    <h4>ResumeJSON</h4>
+                                    <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem', overflow: 'auto' }}>
+{`interface ResumeJSON {
+  contact_info: ContactInfo;
+  summary?: string;
+  skills?: string[];
+  experience: Experience[];
+  education: Education[];
+  certifications?: Certification[];
+  projects?: Project[];
+  raw_text: string;
+}`}
+                                    </pre>
+                                </div>
+                                <div className="card">
+                                    <h4>ResumeEdit</h4>
+                                    <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem', overflow: 'auto' }}>
+{`interface ResumeEdit {
+  edit_id: string;
+  section: string;
+  before_text: string;
+  after_text: string;
+  rationale: string;
+  source_reference: string;
+  approved?: boolean;
+}`}
+                                    </pre>
+                                </div>
+                                <div className="card">
+                                    <h4>JobPosting</h4>
+                                    <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem', overflow: 'auto' }}>
+{`interface JobPosting {
+  folder_name: string;
+  folder_path: string;
+  company: string;
+  position: string;
+  content: string;
+  config?: JobConfig;
+}`}
+                                    </pre>
+                                </div>
+                                <div className="card">
+                                    <h4>ResumeDiff</h4>
+                                    <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem', overflow: 'auto' }}>
+{`interface ResumeDiff {
+  edits: ResumeEdit[];
+  summary: {
+    total_edits: number;
+    approved_edits: number;
+    sections_modified: string[];
+  };
+}`}
+                                    </pre>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Data Flow Patterns" icon="🔄">
+                            <div className="grid-3">
+                                <div className="card">
+                                    <h4>Resume Parsing</h4>
+                                    <div className="process-step" style={{ flexDirection: 'column', alignItems: 'flex-start', padding: '1rem', marginBottom: '0.5rem' }}>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>1. Upload resume.pdf</p>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>2. Extract text with pdf-parse</p>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>3. Pattern match sections</p>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>4. Create ResumeJSON</p>
+                                    </div>
+                                </div>
+                                <div className="card">
+                                    <h4>AI Generation</h4>
+                                    <div className="process-step" style={{ flexDirection: 'column', alignItems: 'flex-start', padding: '1rem', marginBottom: '0.5rem' }}>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>1. Load ResumeJSON + JobPosting</p>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>2. Call OpenAI GPT-4o-mini</p>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>3. Generate cover letter</p>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>4. Generate resume edits</p>
+                                    </div>
+                                </div>
+                                <div className="card">
+                                    <h4>Edit Application</h4>
+                                    <div className="process-step" style={{ flexDirection: 'column', alignItems: 'flex-start', padding: '1rem', marginBottom: '0.5rem' }}>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>1. User approves edits</p>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>2. Clone original ResumeJSON</p>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>3. Apply approved edits</p>
+                                        <p style={{ fontSize: '0.85rem', margin: '0.25rem 0' }}>4. Generate DOCX file</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="File System Organization" icon="📂">
+                            <div className="card">
+                                <h3>Directory Structure</h3>
+                                <pre style={{ background: 'var(--gray-light)', padding: '1.5rem', borderRadius: '8px', fontSize: '0.85rem', overflow: 'auto' }}>
+{`jobsearch/
+├── resume/
+│   └── resume.pdf              # Master resume (input)
+│
+└── jobs/
+    ├── Google - Software Engineer/
+    │   ├── job.txt             # Job description (input)
+    │   ├── config.json         # Optional config (input)
+    │   ├── cover-letter.md     # Generated (output)
+    │   ├── cover-letter.docx   # Generated (output)
+    │   ├── resume-diff.json    # Generated (output)
+    │   ├── resume-diff.txt     # Generated (output)
+    │   └── resume-updated.docx # Generated (output)
+    │
+    └── Microsoft - Product Manager/
+        └── ...`}
+                                </pre>
+                                <div style={{ marginTop: '1rem', padding: '1rem', background: 'var(--sky-blue)', borderRadius: '8px' }}>
+                                    <p style={{ fontSize: '0.9rem', margin: 0 }}>
+                                        <strong>Benefits:</strong> Human-readable formats • Easy backup • Version control friendly • No database required
+                                    </p>
+                                </div>
+                            </div>
+                        </CollapseSection>
+                    </section>
+
+                    {/* API Reference Section */}
+                    <section id="api-reference">
+                        <h2>API Reference</h2>
+                        <p className="subtitle">
+                            RESTful API with standard HTTP methods and JSON responses
+                        </p>
+
+                        <CollapseSection title="GET /api/health" icon="🏥">
+                            <div className="card">
+                                <h3>Health Check Endpoint</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    Check system health and configuration status.
+                                </p>
+                                <div className="grid-2">
+                                    <div>
+                                        <h4>Request</h4>
+                                        <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem' }}>
+{`GET /api/health`}
+                                        </pre>
+                                    </div>
+                                    <div>
+                                        <h4>Response (200 OK)</h4>
+                                        <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem', overflow: 'auto' }}>
+{`{
+  "status": "ok",
+  "openai_configured": true,
+  "resume_found": true
+}`}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="GET /api/resume" icon="📄">
+                            <div className="card">
+                                <h3>Get Master Resume</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    Get parsed master resume as structured JSON.
+                                </p>
+                                <div className="grid-2">
+                                    <div>
+                                        <h4>Request</h4>
+                                        <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem' }}>
+{`GET /api/resume`}
+                                        </pre>
+                                    </div>
+                                    <div>
+                                        <h4>Response (200 OK)</h4>
+                                        <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem', overflow: 'auto', maxHeight: '300px' }}>
+{`{
+  "contact_info": {
+    "name": "John Doe",
+    "email": "john@email.com",
+    "phone": "(555) 123-4567"
+  },
+  "summary": "Software engineer...",
+  "skills": ["JavaScript", "React"],
+  "experience": [...],
+  "education": [...]
+}`}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="GET /api/jobs" icon="📋">
+                            <div className="card">
+                                <h3>List All Jobs</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    List all job applications with status indicators.
+                                </p>
+                                <div className="grid-2">
+                                    <div>
+                                        <h4>Request</h4>
+                                        <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem' }}>
+{`GET /api/jobs`}
+                                        </pre>
+                                    </div>
+                                    <div>
+                                        <h4>Response (200 OK)</h4>
+                                        <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.75rem', overflow: 'auto', maxHeight: '300px' }}>
+{`[
+  {
+    "folder_name": "Google - SWE",
+    "company": "Google",
+    "position": "Software Engineer",
+    "has_job_posting": true,
+    "has_cover_letter": true,
+    "has_resume_diff": true,
+    "has_updated_resume": false
+  }
+]`}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="POST /api/jobs/[folderName]" icon="✨">
+                            <div className="card">
+                                <h3>Generate Materials</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    Generate cover letter and resume edits for a specific job.
+                                </p>
+                                <div className="grid-2">
+                                    <div>
+                                        <h4>Request</h4>
+                                        <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem' }}>
+{`POST /api/jobs/Google%20-%20SWE
+Content-Type: application/json`}
+                                        </pre>
+                                    </div>
+                                    <div>
+                                        <h4>Response (200 OK)</h4>
+                                        <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.75rem', overflow: 'auto', maxHeight: '300px' }}>
+{`{
+  "coverLetter": "Dear...",
+  "resumeDiff": {
+    "edits": [...],
+    "summary": {
+      "total_edits": 7,
+      "approved_edits": 0
+    }
+  }
+}`}
+                                        </pre>
+                                    </div>
+                                </div>
+                                <div style={{ marginTop: '1rem', padding: '1rem', background: 'var(--sky-blue)', borderRadius: '8px' }}>
+                                    <p style={{ fontSize: '0.9rem', margin: 0 }}>
+                                        <strong>Processing Time:</strong> 15-30 seconds • Saves outputs to job folder automatically
+                                    </p>
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="POST /api/jobs/[folderName]/apply-edits" icon="✅">
+                            <div className="card">
+                                <h3>Apply Approved Edits</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                                    Apply approved resume edits and generate updated DOCX.
+                                </p>
+                                <div className="grid-2">
+                                    <div>
+                                        <h4>Request</h4>
+                                        <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.75rem', overflow: 'auto' }}>
+{`POST /api/jobs/Google%20-%20SWE/apply
+Content-Type: application/json
+
+{
+  "edits": [
+    {
+      "edit_id": "edit-1",
+      "section": "summary",
+      "approved": true,
+      ...
+    }
+  ]
+}`}
+                                        </pre>
+                                    </div>
+                                    <div>
+                                        <h4>Response (200 OK)</h4>
+                                        <pre style={{ background: 'var(--gray-light)', padding: '1rem', borderRadius: '8px', fontSize: '0.85rem' }}>
+{`{
+  "message": "Successfully applied
+             edits and generated
+             updated resume"
+}`}
+                                        </pre>
+                                        <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'var(--sky-blue)', borderRadius: '8px' }}>
+                                            <p style={{ fontSize: '0.85rem', margin: 0 }}>
+                                                Creates: <strong>resume-updated.docx</strong>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </CollapseSection>
+                    </section>
+
+                    {/* Features Section */}
+                    <section id="features" style={{ background: 'var(--gray-light)' }}>
+                        <h2>Core Features</h2>
+                        <p className="subtitle">
+                            Everything you need to streamline your job application workflow
+                        </p>
+
+                        <div className="grid-3">
+                            <div className="card">
+                                <span className="icon">📋</span>
+                                <h3>Master Resume Parsing</h3>
+                                <p style={{ color: 'var(--text-light)' }}>
+                                    Upload your resume PDF once. ApplyMate extracts all sections, preserves structure, and uses it as the foundation for all applications.
+                                </p>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <span className="tag">PDF Support</span>
+                                    <span className="tag">Auto-Extract</span>
+                                    <span className="tag">Structured Data</span>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <span className="icon">🔍</span>
+                                <h3>Job Discovery</h3>
+                                <p style={{ color: 'var(--text-light)' }}>
+                                    Organize jobs in simple folders. ApplyMate automatically scans, parses company/position info, and tracks your application status.
+                                </p>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <span className="tag">Auto-Scan</span>
+                                    <span className="tag">Status Tracking</span>
+                                    <span className="tag">Custom Config</span>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <span className="icon">✉️</span>
+                                <h3>AI Cover Letters</h3>
+                                <p style={{ color: 'var(--text-light)' }}>
+                                    Generate unique, compelling cover letters that highlight relevant experience and match each company's needs—in seconds.
+                                </p>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <span className="tag">GPT-4o-mini</span>
+                                    <span className="tag">Contextual</span>
+                                    <span className="tag">Professional</span>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <span className="icon">🔧</span>
+                                <h3>Smart Resume Edits</h3>
+                                <p style={{ color: 'var(--text-light)' }}>
+                                    AI proposes 5-10 improvements per job: better phrasing, keyword optimization, reordering—all based on actual content.
+                                </p>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <span className="tag">No Fabrication</span>
+                                    <span className="tag">Source Refs</span>
+                                    <span className="tag">Rationale</span>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <span className="icon">👁️</span>
+                                <h3>Visual Diff Review</h3>
+                                <p style={{ color: 'var(--text-light)' }}>
+                                    See exactly what changes—before and after, side by side. Understand why each edit helps, then decide what to keep.
+                                </p>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <span className="tag">Before/After</span>
+                                    <span className="tag">Checkboxes</span>
+                                    <span className="tag">Transparent</span>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <span className="icon">💾</span>
+                                <h3>Document Generation</h3>
+                                <p style={{ color: 'var(--text-light)' }}>
+                                    Outputs professional DOCX files for both cover letters and resumes, plus JSON/text diff files for complete transparency.
+                                </p>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <span className="tag">DOCX Format</span>
+                                    <span className="tag">Auto-Save</span>
+                                    <span className="tag">Organized</span>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <span className="icon">🎨</span>
+                                <h3>Clean Dashboard</h3>
+                                <p style={{ color: 'var(--text-light)' }}>
+                                    Modern UI built with Next.js and Tailwind CSS. See all jobs at a glance with clear status indicators and easy navigation.
+                                </p>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <span className="tag">Next.js 16</span>
+                                    <span className="tag">Tailwind</span>
+                                    <span className="tag">Responsive</span>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <span className="icon">⚡</span>
+                                <h3>Fast & Local</h3>
+                                <p style={{ color: 'var(--text-light)' }}>
+                                    Runs on your machine with file-based storage. No database setup, no cloud dependencies, complete data privacy.
+                                </p>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <span className="tag">File-Based</span>
+                                    <span className="tag">Private</span>
+                                    <span className="tag">No DB</span>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <span className="icon">🔐</span>
+                                <h3>Your Data, Your Control</h3>
+                                <p style={{ color: 'var(--text-light)' }}>
+                                    Everything stays on your computer. Only AI generation calls go to OpenAI. No tracking, no cloud storage, no data collection.
+                                </p>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <span className="tag">Local-First</span>
+                                    <span className="tag">Secure</span>
+                                    <span className="tag">Privacy</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* How It Works */}
+                    <section id="how-it-works">
+                        <h2>How It Works</h2>
+                        <p className="subtitle">
+                            From setup to submission in minutes—here's your complete workflow
+                        </p>
+
+                        <div className="process-step">
+                            <div className="process-number">1</div>
+                            <div>
+                                <h3>Setup Once</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '0.75rem' }}>
+                                    Install ApplyMate, add your OpenAI API key, and upload your master resume PDF. That's it—you're ready to go.
+                                </p>
+                                <div>
+                                    <span className="tag">5 minutes</span>
+                                    <span className="tag">One-time setup</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="process-step">
+                            <div className="process-number">2</div>
+                            <div>
+                                <h3>Add Job Opportunities</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '0.75rem' }}>
+                                    Create a folder named "Company Name - Position Title" and drop in the job description as job.txt or job.md.
+                                </p>
+                                <div>
+                                    <span className="tag">30 seconds per job</span>
+                                    <span className="tag">Simple folder structure</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="process-step">
+                            <div className="process-number">3</div>
+                            <div>
+                                <h3>Generate Materials</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '0.75rem' }}>
+                                    Click "Generate Cover Letter & Resume Edits" and wait 15-30 seconds. AI analyzes the job and creates tailored content.
+                                </p>
+                                <div>
+                                    <span className="tag">15-30 seconds</span>
+                                    <span className="tag">GPT-4o-mini</span>
+                                    <span className="tag">Automated</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="process-step">
+                            <div className="process-number">4</div>
+                            <div>
+                                <h3>Review & Approve Edits</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '0.75rem' }}>
+                                    Read the cover letter, review each resume edit (before/after), understand the rationale, and check the boxes for edits you approve.
+                                </p>
+                                <div>
+                                    <span className="tag">2-3 minutes</span>
+                                    <span className="tag">Full control</span>
+                                    <span className="tag">Transparent</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="process-step">
+                            <div className="process-number">5</div>
+                            <div>
+                                <h3>Apply Edits & Download</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '0.75rem' }}>
+                                    Click "Apply Edits" to generate your updated resume DOCX. Both cover letter and resume are saved in the job folder, ready to submit.
+                                </p>
+                                <div>
+                                    <span className="tag">Instant</span>
+                                    <span className="tag">DOCX format</span>
+                                    <span className="tag">Ready to submit</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{ marginTop: '3rem' }}>
+                            <div className="card" style={{ background: 'var(--sky-blue)', textAlign: 'center', padding: '2.5rem' }}>
+                                <h3 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Total Time: ~5 Minutes</h3>
+                                <p style={{ fontSize: '1.1rem', color: 'var(--text-light)' }}>
+                                    vs. 30-60 minutes doing it manually
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Technology Stack */}
+                    <section id="tech" style={{ background: 'var(--gray-light)' }}>
+                        <h2>Technology Stack</h2>
+                        <p className="subtitle">
+                            Built with modern, battle-tested technologies for reliability and performance
+                        </p>
+
+                        <div className="grid-2">
+                            <div className="card">
+                                <h3>🎨 Frontend</h3>
+                                <ul className="feature-list">
+                                    <li><strong>Next.js 16</strong> - React framework with App Router</li>
+                                    <li><strong>React 19</strong> - Modern UI library</li>
+                                    <li><strong>TypeScript</strong> - Type safety and better DX</li>
+                                    <li><strong>Tailwind CSS</strong> - Utility-first styling</li>
+                                </ul>
+                            </div>
+
+                            <div className="card">
+                                <h3>⚙️ Backend</h3>
+                                <ul className="feature-list">
+                                    <li><strong>Next.js API Routes</strong> - Serverless functions</li>
+                                    <li><strong>Node.js 18+</strong> - JavaScript runtime</li>
+                                    <li><strong>OpenAI SDK</strong> - GPT-4o-mini integration</li>
+                                    <li><strong>File System</strong> - Simple, local storage</li>
+                                </ul>
+                            </div>
+
+                            <div className="card">
+                                <h3>🤖 AI & Processing</h3>
+                                <ul className="feature-list">
+                                    <li><strong>OpenAI GPT-4o-mini</strong> - Cover letter & edit generation</li>
+                                    <li><strong>pdf-parse</strong> - Resume PDF extraction</li>
+                                    <li><strong>docx</strong> - DOCX document creation</li>
+                                    <li><strong>Custom prompts</strong> - Optimized for job applications</li>
+                                </ul>
+                            </div>
+
+                            <div className="card">
+                                <h3>🛠️ Developer Tools</h3>
+                                <ul className="feature-list">
+                                    <li><strong>Hot Reload</strong> - Instant feedback during development</li>
+                                    <li><strong>TypeScript</strong> - Catch errors before runtime</li>
+                                    <li><strong>ESLint</strong> - Code quality and consistency</li>
+                                    <li><strong>Git</strong> - Version control</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="tech-stack">
+                            <div className="tech-item">Next.js</div>
+                            <div className="tech-item">React</div>
+                            <div className="tech-item">TypeScript</div>
+                            <div className="tech-item">Tailwind CSS</div>
+                            <div className="tech-item">OpenAI</div>
+                            <div className="tech-item">Node.js</div>
+                            <div className="tech-item">pdf-parse</div>
+                            <div className="tech-item">docx</div>
+                        </div>
+
+                        <div style={{ marginTop: '3rem' }}>
+                            <div className="card" style={{ background: 'var(--white)' }}>
+                                <h3 style={{ textAlign: 'center', marginBottom: '2rem' }}>Key Design Decisions</h3>
+                                <div className="grid-3">
+                                    <div>
+                                        <h4>📁 File-Based Storage</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                            No database setup required. Everything stored in organized folders on your machine.
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4>🏠 Local-First</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                            Runs entirely on your computer. Only AI calls go to OpenAI—your data stays private.
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4>⚡ Fast & Simple</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                            Minimal dependencies, quick setup, instant response. No complex infrastructure needed.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Roadmap */}
+                    <section id="roadmap">
+                        <h2>Product Roadmap</h2>
+                        <p className="subtitle">
+                            From MVP to enterprise-grade job application platform
+                        </p>
+
+                        <CollapseSection title="MVP v1.0 - Current (January 2026)" icon="✅">
+                            <div className="card" style={{ borderLeft: '4px solid var(--accent-green)' }}>
+                                <span className="badge">COMPLETE</span>
+                                <h3>Core Features Delivered</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                                    All essential functionality for personal job search automation
+                                </p>
+                                
+                                <div className="grid-2">
+                                    <div>
+                                        <h4>✅ Resume Management</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>PDF resume parsing with structure preservation</li>
+                                            <li>Extract contact, experience, education, skills</li>
+                                            <li>Single master resume as source of truth</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>✅ Job Discovery & Tracking</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Folder-based job organization</li>
+                                            <li>Auto-parse company and position</li>
+                                            <li>Status tracking across workflow</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>✅ AI Generation</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Tailored cover letters in seconds</li>
+                                            <li>Smart resume edits with rationale</li>
+                                            <li>Zero fabrication guarantee</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>✅ Edit Approval Workflow</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Before/after comparison view</li>
+                                            <li>Checkbox approval system</li>
+                                            <li>Complete transparency and control</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>✅ Document Output</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Professional DOCX files</li>
+                                            <li>Markdown and JSON formats</li>
+                                            <li>Organized by job in folders</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>✅ User Interface</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Clean, modern dashboard</li>
+                                            <li>Real-time status indicators</li>
+                                            <li>Responsive design</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--gray-light)', borderRadius: '8px' }}>
+                                    <strong>Target Metrics:</strong> Personal use • 10-50 job applications • 5 min per application • Zero fabrication • 100% data privacy
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Phase 2 - Enhanced Editing & Customization (Q2 2026)" icon="🎨">
+                            <div className="card" style={{ borderLeft: '4px solid var(--accent-purple)' }}>
+                                <h3>Timeline: 2-3 months</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                                    Advanced customization and multiple format support
+                                </p>
+                                
+                                <div className="grid-2">
+                                    <div>
+                                        <h4>📝 Advanced Resume Editing</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Multiple resume templates/formats</li>
+                                            <li>Section reordering based on job requirements</li>
+                                            <li>Skills keyword highlighting and matching</li>
+                                            <li>Achievement quantification suggestions</li>
+                                            <li>Industry-specific terminology recommendations</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>⚙️ Customization Options</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Custom prompt templates for different industries</li>
+                                            <li>Company-specific cover letter styles</li>
+                                            <li>Resume length optimization (1-page vs 2-page)</li>
+                                            <li>Tone adjustment (formal, conversational, technical)</li>
+                                            <li>Personal branding consistency tools</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>🎯 Smart Matching</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Job-resume compatibility scoring</li>
+                                            <li>Missing keyword identification</li>
+                                            <li>Skills gap analysis</li>
+                                            <li>Experience relevance ranking</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>📄 Format Support</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>PDF export with custom styling</li>
+                                            <li>HTML resume generation</li>
+                                            <li>LaTeX template support</li>
+                                            <li>ATS-optimized formats</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--gray-light)', borderRadius: '8px' }}>
+                                    <strong>Target Metrics:</strong> 50+ applications supported • 5 resume templates • 10+ industry-specific presets • 95% user satisfaction
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Phase 3 - Tracking & Analytics (Q3 2026)" icon="📊">
+                            <div className="card" style={{ borderLeft: '4px solid var(--primary-blue)' }}>
+                                <h3>Timeline: 2-3 months</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                                    Track applications and gain insights into your job search
+                                </p>
+                                
+                                <div className="grid-2">
+                                    <div>
+                                        <h4>📈 Application Tracking</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Application status workflow (draft â†' applied â†' interviewing â†' outcome)</li>
+                                            <li>Date tracking for submissions and follow-ups</li>
+                                            <li>Interview notes and feedback storage</li>
+                                            <li>Offer comparison tools</li>
+                                            <li>Follow-up reminders</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>📊 Analytics & Insights</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Success rate analysis by industry/position type</li>
+                                            <li>Most effective resume edits tracking</li>
+                                            <li>Application timeline visualization</li>
+                                            <li>Skills gap identification</li>
+                                            <li>Interview conversion metrics</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>📅 Calendar Integration</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Interview scheduling</li>
+                                            <li>Follow-up reminders</li>
+                                            <li>Application deadline tracking</li>
+                                            <li>Google Calendar sync</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>📝 Notes & History</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Per-job notes and observations</li>
+                                            <li>Communication history</li>
+                                            <li>Interviewer information</li>
+                                            <li>Company research storage</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--gray-light)', borderRadius: '8px' }}>
+                                    <strong>Target Metrics:</strong> 100+ applications tracked • 20+ insights per search • 80% data-driven decisions • Visual dashboards
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Phase 4 - Collaboration & Cloud (Q4 2026)" icon="☁️">
+                            <div className="card" style={{ borderLeft: '4px solid var(--accent-orange)' }}>
+                                <h3>Timeline: 3-4 months</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                                    Multi-user support and cloud deployment
+                                </p>
+                                
+                                <div className="grid-2">
+                                    <div>
+                                        <h4>👥 Multi-User Support</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>User authentication (Clerk)</li>
+                                            <li>Individual user profiles</li>
+                                            <li>Resume version history</li>
+                                            <li>Personal settings and preferences</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>☁️ Cloud Storage</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>AWS S3 file storage</li>
+                                            <li>PostgreSQL database (Supabase)</li>
+                                            <li>Access from any device</li>
+                                            <li>Automatic backups</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>🤝 Collaboration Features</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Share resumes with mentors/coaches</li>
+                                            <li>Peer review functionality</li>
+                                            <li>Feedback and commenting</li>
+                                            <li>Template sharing</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>🔌 Integrations</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>LinkedIn profile import</li>
+                                            <li>Email integration for submissions</li>
+                                            <li>Google Drive sync</li>
+                                            <li>Slack notifications</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--gray-light)', borderRadius: '8px' }}>
+                                    <strong>Target Metrics:</strong> 100+ active users • Cloud deployment • 99.9% uptime • Multi-device access
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <CollapseSection title="Phase 5 - AI Enhancements & Job Board Integration (2027)" icon="🚀">
+                            <div className="card" style={{ borderLeft: '4px solid var(--accent-green)' }}>
+                                <h3>Timeline: 4-6 months</h3>
+                                <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                                    Advanced AI features and external integrations
+                                </p>
+                                
+                                <div className="grid-2">
+                                    <div>
+                                        <h4>🤖 Advanced AI Features</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Interview preparation based on job posting</li>
+                                            <li>Salary negotiation guidance</li>
+                                            <li>Company research automation</li>
+                                            <li>Follow-up email generation</li>
+                                            <li>Skills development recommendations</li>
+                                            <li>Career path suggestions</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>🔍 Job Board Integration</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>LinkedIn Jobs API</li>
+                                            <li>Indeed integration</li>
+                                            <li>Glassdoor connection</li>
+                                            <li>One-click import of job postings</li>
+                                            <li>Automatic job-resume matching</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>🎯 Smart Matching</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Job recommendation engine</li>
+                                            <li>Compatibility scoring</li>
+                                            <li>Skills gap analysis with learning resources</li>
+                                            <li>Career trajectory predictions</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4>📧 Automation</h4>
+                                        <ul style={{ fontSize: '0.9rem' }}>
+                                            <li>Direct job application submission</li>
+                                            <li>Automated follow-up emails</li>
+                                            <li>Status update notifications</li>
+                                            <li>Interview scheduling automation</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--gray-light)', borderRadius: '8px' }}>
+                                    <strong>Target Metrics:</strong> 500+ active users • 10+ integrated job boards • 90% job-match accuracy • End-to-end automation
+                                </div>
+                            </div>
+                        </CollapseSection>
+
+                        <div style={{ marginTop: '3rem' }}>
+                            <h3 style={{ textAlign: 'center', marginBottom: '2rem' }}>Future Vision</h3>
+                            <div className="grid-4">
+                                <div className="card" style={{ textAlign: 'center' }}>
+                                    <h4 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🏢</h4>
+                                    <h4>Enterprise Edition</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                                        University career centers and HR teams
+                                    </p>
+                                </div>
+                                <div className="card" style={{ textAlign: 'center' }}>
+                                    <h4 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📱</h4>
+                                    <h4>Mobile Apps</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                                        iOS and Android native apps
+                                    </p>
+                                </div>
+                                <div className="card" style={{ textAlign: 'center' }}>
+                                    <h4 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🌍</h4>
+                                    <h4>International</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                                        Multi-language support
+                                    </p>
+                                </div>
+                                <div className="card" style={{ textAlign: 'center' }}>
+                                    <h4 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎓</h4>
+                                    <h4>Career Platform</h4>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                                        Courses and mentorship
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <section style={{ background: 'var(--gray-light)', padding: '3rem 4rem', marginTop: '4rem' }}>
+                        <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
+                            <div className="logo" style={{ fontSize: '2rem', marginBottom: '1rem' }}>ApplyMate</div>
+                            <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                                Empowering job seekers with AI-powered application automation
+                            </p>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                                <span>Built with Next.js & OpenAI</span>
+                                <span>•</span>
+                                <span>MVP v1.0</span>
+                                <span>•</span>
+                                <span>January 2026</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
